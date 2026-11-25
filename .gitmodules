@@ -7,3 +7,6 @@
 [submodule "src/games/reversi"]
 	path = src/games/reversi
 	url = ../kwibaka-game-reversi.git
+[submodule "src/games/alendo"]
+	path = src/games/alendo
+	url = ../kwibaka-game-alendo.git

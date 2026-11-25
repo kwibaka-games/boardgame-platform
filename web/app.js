@@ -282,9 +282,17 @@ function openRules(gameId) {
       ? '/rules/ice.html'
       : gameId === 'reversi'
         ? '/rules/reversi.html'
-        : '/rules/mock-ttt.html';
+        : gameId === 'alendo'
+          ? '/rules/alendo.html'
+          : '/rules/mock-ttt.html';
   $('rules-title').textContent =
-    gameId === 'ice-chaos' ? '冰她 · 规则' : gameId === 'reversi' ? '黑白棋 · 规则' : '规则';
+    gameId === 'ice-chaos'
+      ? '冰她 · 规则'
+      : gameId === 'reversi'
+        ? '黑白棋 · 规则'
+        : gameId === 'alendo'
+          ? '阿尔林铎棋 · 规则'
+          : '规则';
   $('rules-frame').src = page;
   $('rules-dialog').showModal();
 }
@@ -531,7 +539,7 @@ function renderRoom() {
     actions.appendChild(exit);
   } else {
     const me = room.players.find((player) => player.userId === state.user.id);
-    if (room.gameId === 'reversi' && room.status === 'waiting') {
+    if ((room.gameId === 'reversi' || room.gameId === 'alendo') && room.status === 'waiting') {
       renderReversiColorSetting(actions);
     }
     if (room.status === 'waiting') {
@@ -583,7 +591,7 @@ function renderReversiColorSetting(actions) {
     ? hostColor
     : (hostColor === 'black' ? 'white' : 'black');
   const box = el('div', 'room-setting');
-  box.appendChild(el('span', 'room-setting-label', '黑白棋执子'));
+  box.appendChild(el('span', 'room-setting-label', room.gameId === 'alendo' ? '阿尔林铎棋执子' : '黑白棋执子'));
   if (room.ownerId === state.user.id) {
     const group = el('div', 'segmented');
     for (const color of ['black', 'white']) {

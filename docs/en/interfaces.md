@@ -192,8 +192,9 @@ in `src/platform/game-catalog.ts`.
 
 A single implementation may expose multiple catalog IDs. Example: the `ice`
 repository provides `ice` (standard) and `ice-chaos` (chaos), both pointing at
-the same worker. `reversi` is a two-player complete-information game; the host
-color is a room setting, and `spectatorChat` is enabled.
+the same worker. `reversi` and `alendo` are two-player complete-information games; the host
+color is a room setting, and `spectatorChat` is enabled. `alendo` uses a
+96-triangle board from Hypergryph's 《来自星尘》 and always shows legal-move hints.
 
 ### Versioning
 

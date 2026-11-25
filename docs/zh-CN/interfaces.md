@@ -182,8 +182,8 @@ src/games/<name>/
 注册 worker 和 metadata。
 
 一个实现可以暴露多个 catalog ID：例如 `ice` 仓库同时提供 `ice`（标准）
-和 `ice-chaos`（混沌），两者指向同一个 worker。`reversi` 是双人完全信息
-游戏，房主执子属于房间设置，观战聊天开启。
+和 `ice-chaos`（混沌），两者指向同一个 worker。`reversi` 与 `alendo` 是双人完全信息游戏，房主执子属于房间设置，观战聊天开启。
+`alendo` 使用 Hypergryph《来自星尘》的 96 格三角棋盘，并强制显示合法落点提示。
 
 ### 版本管理
 

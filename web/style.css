@@ -1491,3 +1491,155 @@ button.reversi-cell:disabled {
   color: var(--green);
   background: color-mix(in srgb, var(--green) 8%, transparent);
 }
+
+/* ── Alendo / 阿尔林铎棋 ────────────────────────────────────────────── */
+.alendo-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.alendo-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.alendo-score {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.alendo-count {
+  padding: 0.22rem 0.5rem;
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.alendo-count.black {
+  color: #11111b;
+  background: #cdd6f4;
+}
+
+.alendo-count.white {
+  color: #11111b;
+  background: #f5e0dc;
+}
+
+.alendo-you,
+.alendo-turn {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.alendo-turn {
+  margin-left: auto;
+  color: var(--accent);
+}
+
+.alendo-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 1.8rem;
+}
+
+.alendo-hint-note {
+  color: var(--peach);
+  font-size: 0.75rem;
+}
+
+button.alendo-button {
+  padding: 0.35rem 0.65rem;
+  color: var(--red);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--red) 45%, var(--line));
+  border-radius: 7px;
+  font-size: 0.76rem;
+}
+
+.alendo-board {
+  display: block;
+  width: min(100%, 560px);
+  max-height: 62vh;
+  margin: 0 auto;
+  filter: drop-shadow(0 8px 28px rgb(0 0 0 / 35%));
+}
+
+.alendo-cell {
+  fill: #f3e9e2;
+  stroke: #5d5149;
+  stroke-width: 0.025;
+  cursor: default;
+  transition: fill 120ms ease;
+}
+
+.alendo-cell.playable {
+  cursor: pointer;
+}
+
+.alendo-cell.playable:hover {
+  fill: #f9e2af;
+}
+
+.alendo-cell.black {
+  fill: #1b1518;
+}
+
+.alendo-cell.white {
+  fill: #f5e0dc;
+}
+
+.alendo-hint {
+  fill: #f9e2af;
+  stroke: #b58900;
+  stroke-width: 0.012;
+  pointer-events: none;
+}
+
+.alendo-legend {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.74rem;
+}
+
+.alendo-player {
+  padding: 0.2rem 0.45rem;
+  border-radius: 5px;
+  background: var(--surface);
+}
+
+.alendo-player.black {
+  border-left: 4px solid #1b1518;
+}
+
+.alendo-player.white {
+  border-left: 4px solid #f5e0dc;
+}
+
+.alendo-source {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
+.alendo-result {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  width: 100%;
+  padding: 0.55rem;
+  border: 1px solid var(--green);
+  border-radius: 8px;
+  color: var(--green);
+  background: color-mix(in srgb, var(--green) 8%, transparent);
+}

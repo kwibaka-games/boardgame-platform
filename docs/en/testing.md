@@ -29,6 +29,8 @@ The suite covers:
   choices, reconnect and platform integration.
 - Reversi legal moves/flips, host color assignment, full-game termination,
   resignation, and a real platform/worker integration test.
+- Alendo 96-triangle geometry/strips, six-piece setup, host color, random
+  full-game termination, and resignation.
 
 `npm test` uses an in-memory SQLite database and starts real worker child
 processes; no external services are needed.

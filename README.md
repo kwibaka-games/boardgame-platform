@@ -26,12 +26,17 @@ process, and each game implementation is versioned in its own git repository.
   and a browser UI.
 - Reversi / 黑白棋: host chooses black or white before start, per-player move
   hints, live disc counts, resignation, pass handling, and spectator chat.
+- 阿尔林铎棋 / Alendo: triangular-board Othello from Hypergryph's
+  《来自星尘》; 96-triangle board, six centre pieces, forced legal-move hints,
+  live counts, resignation, and spectator chat.
 - Mock tic-tac-toe worker as the reference implementation.
 - Self-contained FontAwesome Free assets, no CDN dependency.
 
 ![Ice game](docs/assets/ice-cards.png)
 
 ![Reversi](docs/assets/reversi.png)
+
+![阿尔林铎棋](docs/assets/alendo.png)
 
 ![Profile](docs/assets/profile.png)
 
@@ -61,6 +66,7 @@ src/protocol/        shared protocol v1 types and zod validation
 src/games/ice/       git submodule: kwibaka-game-ice repository
 src/games/mock/      git submodule: kwibaka-game-mock-ttt repository
 src/games/reversi/   git submodule: kwibaka-game-reversi repository
+src/games/alendo/    git submodule: kwibaka-game-alendo repository
 src/cli/             administrator bootstrap CLI
 web/                 platform shell, styles, rules pages, generated game UI
 scripts/             sync-games and ice fuzzer
