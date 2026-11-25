@@ -170,3 +170,5 @@ docker compose -f deploy/docker-compose.yml start platform
 - 单独备份数据库和证书。
 - 日志不得包含密码、会话 token、隐藏手牌。
 - 不要运行开放中继（open relay）SMTP 服务器。
+
+> 频率限制按邮箱/账号而不是按来源 IP 计算。校园网 NAT 下所有玩家通常共享同一个公网 IP，按 IP 限制会误伤整批玩家。

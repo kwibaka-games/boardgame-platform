@@ -118,15 +118,6 @@ export function createPlatform(config: Config, db = openDb(config.dbPath)): Plat
     next();
   });
 
-  const loginAttempts = new Map<string, number[]>();
-  const loginLimited = (ip: string): boolean => {
-    const now = Date.now();
-    const recent = (loginAttempts.get(ip) ?? []).filter((ts) => now - ts < 5 * 60_000);
-    recent.push(now);
-    loginAttempts.set(ip, recent);
-    return recent.length > config.loginRateLimit;
-  };
-
   const requireOrigin = (req: Request, res: Response, next: NextFunction): void => {
     if (!sameOrigin(req, config)) {
       res.status(403).json({ error: 'origin not allowed' });
@@ -255,11 +246,6 @@ export function createPlatform(config: Config, db = openDb(config.dbPath)): Plat
   });
 
   app.post('/api/auth/register', requireOrigin, async (req, res) => {
-    const ip = req.ip || 'unknown';
-    if (rateLimited(`register:${ip}`, 5, 30 * 60_000)) {
-      res.status(429).json({ error: '注册尝试过多，请稍后再试' });
-      return;
-    }
     const parsed = registerSchema.safeParse(req.body);
     if (!parsed.success) {
       res.status(400).json({ error: '请输入有效邮箱、至少 8 位密码和用户名' });
@@ -271,6 +257,12 @@ export function createPlatform(config: Config, db = openDb(config.dbPath)): Plat
       return;
     }
     const email = normalizeEmail(parsed.data.email);
+    // Limit per email, never per IP: a campus NAT makes every player share
+    // one public address, so IP limits would block the whole group.
+    if (rateLimited(`register:${email}`, 5, 30 * 60_000)) {
+      res.status(429).json({ error: '该邮箱注册尝试过多，请稍后再试' });
+      return;
+    }
     try {
       const isAdmin = config.adminEmail ? email === config.adminEmail : countUsers(db) === 0;
       const user = createUnverifiedUser(db, name, email, parsed.data.password, isAdmin);
@@ -325,12 +317,11 @@ export function createPlatform(config: Config, db = openDb(config.dbPath)): Plat
   });
 
   app.post('/api/auth/resend-verification', requireOrigin, async (req, res) => {
-    const ip = req.ip || 'unknown';
-    if (rateLimited(`resend:${ip}`, 3, 10 * 60_000)) {
-      res.status(429).json({ error: '请求过于频繁，请稍后再试' });
+    const email = normalizeEmail(typeof req.body?.email === 'string' ? req.body.email : '');
+    if (rateLimited(`resend:${email}`, 3, 10 * 60_000)) {
+      res.status(429).json({ error: '该邮箱请求过于频繁，请稍后再试' });
       return;
     }
-    const email = normalizeEmail(typeof req.body?.email === 'string' ? req.body.email : '');
     const user = getUserByEmail(db, email);
     if (!user || user.email_verified) {
       res.status(400).json({ error: '该邮箱无需验证' });
@@ -345,17 +336,16 @@ export function createPlatform(config: Config, db = openDb(config.dbPath)): Plat
   });
 
   app.post('/api/auth/login', requireOrigin, (req, res) => {
-    const ip = req.ip || 'unknown';
-    if (loginLimited(ip)) {
-      res.status(429).json({ error: 'too many attempts' });
-      return;
-    }
     const parsed = loginSchema.safeParse(req.body);
     if (!parsed.success) {
       res.status(400).json({ error: '请输入邮箱和密码' });
       return;
     }
     const email = normalizeEmail(parsed.data.email);
+    if (rateLimited(`login:${email}`, config.loginRateLimit, 5 * 60_000)) {
+      res.status(429).json({ error: '该邮箱登录尝试过多，请稍后再试' });
+      return;
+    }
     const user = getUserByEmail(db, email);
     if (!user || !verifySecret(parsed.data.password, user.password_hash)) {
       res.status(401).json({ error: '邮箱或密码错误' });
@@ -438,8 +428,12 @@ export function createPlatform(config: Config, db = openDb(config.dbPath)): Plat
   });
 
   app.post('/api/me/email/change', auth, requireOrigin, async (req, res) => {
-    const ip = req.ip || 'unknown';
-    if (rateLimited(`email-change:${ip}`, 5, 30 * 60_000)) {
+    const user = getUserById(db, currentUser(res).id);
+    if (!user) {
+      res.status(401).json({ error: 'session expired' });
+      return;
+    }
+    if (rateLimited(`email-change:${user.id}`, 5, 30 * 60_000)) {
       res.status(429).json({ error: '请求过于频繁，请稍后再试' });
       return;
     }
@@ -448,8 +442,7 @@ export function createPlatform(config: Config, db = openDb(config.dbPath)): Plat
       res.status(400).json({ error: '请输入有效邮箱和当前密码' });
       return;
     }
-    const user = getUserById(db, currentUser(res).id);
-    if (!user || !verifySecret(parsed.data.password, user.password_hash)) {
+    if (!verifySecret(parsed.data.password, user.password_hash)) {
       res.status(403).json({ error: '密码错误' });
       return;
     }

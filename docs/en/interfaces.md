@@ -210,3 +210,5 @@ is independent from game versions.
   processes.
 - Browser modules are plain ES modules and are exercised manually or by a
   browser test runner; they must not depend on Node APIs.
+
+> Rate limits are scoped per email/account, not per source IP. Campus NAT commonly makes every player share one public IP, so IP-based limits would block the whole group.

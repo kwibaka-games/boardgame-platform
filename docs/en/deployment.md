@@ -176,3 +176,5 @@ Test restores periodically.
 - Back up the database and certificate separately.
 - Logs must not contain passwords, session tokens, or hidden game state.
 - Do not run an open SMTP relay.
+
+> Rate limits are scoped per email/account, not per source IP. Campus NAT commonly makes every player share one public IP, so IP-based limits would block the whole group.

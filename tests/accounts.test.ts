@@ -192,3 +192,22 @@ test('room passwords, readiness, kick and duplicate joins', async () => {
     await platform.close();
   }
 });
+
+test('registration is limited per email, not by shared campus/NAT IP', async () => {
+  const config = testConfig();
+  const db = openDb(':memory:');
+  const platform: Platform = createPlatform(config, db);
+  const base = `http://127.0.0.1:${await platform.listen(0, '127.0.0.1')}`;
+  try {
+    for (let i = 0; i < 7; i += 1) {
+      const result = await request(base, '/api/auth/register', json({
+        email: `shared-ip-${i}@example.test`,
+        name: `SharedIp${i}`,
+        password: 'sharedpass1',
+      }));
+      assert.equal(result.status, 201, `registration ${i}: ${JSON.stringify(result.body)}`);
+    }
+  } finally {
+    await platform.close();
+  }
+});

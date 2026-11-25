@@ -199,3 +199,5 @@ git commit -m "feat: bump ice game"
 - 游戏引擎单元测试在主仓库 `tests/`。
 - 平台/游戏集成测试使用内存 SQLite + 真实 worker 进程。
 - 浏览器模块是普通 ES Module，通过手工或浏览器测试运行器验证；不得依赖 Node API。
+
+> 频率限制按邮箱/账号而不是按来源 IP 计算。校园网 NAT 下所有玩家通常共享同一个公网 IP，按 IP 限制会误伤整批玩家。
