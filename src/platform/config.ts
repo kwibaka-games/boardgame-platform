@@ -19,7 +19,7 @@ export interface Config {
   dbPath: string;
   webDir: string;
   publicOrigin: string | null;
-  /** Additional exact origins accepted for CORS/CSRF, e.g. domain:191. */
+  /** Additional exact origins accepted for CORS/CSRF, e.g. domain:8443. */
   publicOrigins?: string[];
   cookieSecure: boolean;
   sessionTtlMs: number;
