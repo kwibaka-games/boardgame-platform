@@ -15,7 +15,7 @@ services:
       HOST: "0.0.0.0"
       DB_PATH: "/app/data/platform.db"
       WEB_DIR: "/app/web"
-      PUBLIC_ORIGIN: "${PUBLIC_ORIGIN:-http://192.168.1.102:8080}"
+      PUBLIC_ORIGIN: "${PUBLIC_ORIGIN:-http://localhost:8080}"
       PUBLIC_ORIGINS: "${PUBLIC_ORIGINS:-}"
       COOKIE_SECURE: "${COOKIE_SECURE:-0}"
       GAME_SECRET: "${GAME_SECRET:-dev-game-secret-change-me}"

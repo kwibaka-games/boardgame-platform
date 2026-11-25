@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Issue a Let's Encrypt certificate for game.realkawaiibaka.com.
+# Issue a Let's Encrypt certificate for game.example.com.
 #
 #   ./deploy/issue-cert.sh manual-init    # print the TXT record; add it in Aliyun
 #   ./deploy/issue-cert.sh manual-finish  # validate the TXT and install
@@ -11,7 +11,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DOMAIN="${DOMAIN:-game.realkawaiibaka.com}"
+DOMAIN="${DOMAIN:-game.example.com}"
 ACME_HOME="${ACME_HOME:-$ROOT/.acme}"
 ACME="$ACME_HOME/acme.sh"
 CERT_DIR="${CERT_DIR:-$ROOT/deploy/certs}"
