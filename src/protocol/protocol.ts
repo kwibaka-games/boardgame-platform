@@ -70,6 +70,7 @@ export interface RoomSummary {
   spectatorChat: boolean;
   hasPassword: boolean;
   allReady: boolean;
+  settings: Record<string, unknown>;
 }
 
 export interface RoomView {
@@ -86,6 +87,7 @@ export interface RoomView {
   spectatorChat: boolean;
   hasPassword: boolean;
   allReady: boolean;
+  settings: Record<string, unknown>;
   spectators: { userId: UserId; name: string }[];
   you: { userId: UserId; seat: number | null; spectator: boolean };
 }
@@ -245,6 +247,13 @@ export const joinRoomSchema = z.object({
 
 export const roomReadySchema = z.object({
   ready: z.boolean(),
+});
+
+export const roomSettingsSchema = z.object({
+  settings: z.record(z.unknown()).refine(
+    (value) => JSON.stringify(value).length <= 2048,
+    'settings too large',
+  ),
 });
 
 export const adminBanSchema = z.object({

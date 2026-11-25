@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>黑白棋规则</title>
+<style>
+body{font-family:system-ui,"Noto Sans SC",sans-serif;background:#11111b;color:#cdd6f4;line-height:1.7;margin:0;padding:20px}
+h1{color:#89b4fa;margin:0 0 8px;font-size:1.35rem}h2{color:#f9e2af;margin:20px 0 6px;font-size:1rem}
+p,li{font-size:.9rem;color:#bac2de}strong{color:#cdd6f4}.muted{color:#9399b2;font-size:.8rem}
+</style></head><body>
+<h1>黑白棋 / Reversi</h1>
+<p class="muted">2 人 · 完全信息 · 观战者可发言</p>
+<h2>目标</h2>
+<p>棋盘为 8×8。黑棋先行。每次落子必须夹住至少一枚对方棋子；所有被夹住的棋子翻成自己的颜色。终局棋子多者获胜；数量相同为平局。</p>
+<h2>开局</h2>
+<p>棋盘中央四格交叉放置两黑两白。房主在准备阶段选择自己执黑或执白，另一位玩家自动执另一种颜色；房主可以在开始前随时更改。</p>
+<h2>行动</h2>
+<ul>
+<li>点击“提示”可在自己的回合高亮所有合法落点；提示只影响自己的画面，不干扰对手。</li>
+<li>若没有合法落点，会轮空并交回对方；双方都没有合法落点时结束。</li>
+<li>一方棋子被吃光，或棋盘被填满，也会结束并立即判定胜负。</li>
+<li>对局中任意一方可以点击“认输”，对方获胜。</li>
+</ul>
+<h2>界面</h2>
+<p>顶部显示双方棋子数量；棋盘上方显示当前回合和你的颜色；观战者可以看到完整棋盘与数量，但不能操作。</p>
+</body></html>

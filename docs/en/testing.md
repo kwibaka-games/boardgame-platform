@@ -27,6 +27,8 @@ The suite covers:
   isolation;
 - 《冰冷的她醒来之前》 deck/settlement/rules, private views, simultaneous
   choices, reconnect and platform integration.
+- Reversi legal moves/flips, host color assignment, full-game termination,
+  resignation, and a real platform/worker integration test.
 
 `npm test` uses an in-memory SQLite database and starts real worker child
 processes; no external services are needed.

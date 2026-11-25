@@ -47,6 +47,7 @@ chmod 600 deploy/.env
 | `COOKIE_SECURE` | HTTPS 下为 `1`，纯 HTTP 本地测试为 `0`。 |
 | `GAME_SECRET` | platform 与 game worker 的共享密钥，必须随机。 |
 | `SESSION_TTL_HOURS` | 登录会话有效期。 |
+| `ROOM_WAIT_TIMEOUT_MS` | 房间等待超时（毫秒）；从创建/重开起 15 分钟未开始则自动关闭。 |
 | `ADMIN_EMAIL` | 可选，指定注册后自动成为管理员的邮箱。 |
 | `EMAIL_DEBUG` | `1` 时验证码显示在页面/日志，正式站禁止使用。 |
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_SECURE` / `SMTP_USER` / `SMTP_PASS` / `MAIL_FROM` | 真实邮件发送。 |

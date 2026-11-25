@@ -25,6 +25,7 @@ export interface Config {
   sessionTtlMs: number;
   gameSecret: string;
   loginRateLimit: number;
+  roomWaitTimeoutMs: number;
   adminEmail: string | null;
   emailDebug: boolean;
   smtpHost: string | null;
@@ -51,6 +52,7 @@ export function loadConfig(): Config {
     sessionTtlMs: envInt('SESSION_TTL_HOURS', 24 * 7) * 60 * 60 * 1000,
     gameSecret: process.env.GAME_SECRET || 'dev-game-secret-change-me',
     loginRateLimit: envInt('LOGIN_RATE_LIMIT', 20),
+    roomWaitTimeoutMs: envInt('ROOM_WAIT_TIMEOUT_MS', 15 * 60_000),
     adminEmail: process.env.ADMIN_EMAIL ? process.env.ADMIN_EMAIL.trim().toLowerCase() : null,
     emailDebug: envBool('EMAIL_DEBUG', false),
     smtpHost: process.env.SMTP_HOST || null,

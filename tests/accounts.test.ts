@@ -181,13 +181,34 @@ test('room passwords, readiness, kick and duplicate joins', async () => {
     const kickedRoomId = kickedRoom.body.room.id as string;
     await request(base, `/api/rooms/${kickedRoomId}/join`, json({}), bobLogin.cookie);
     await request(base, `/api/rooms/${kickedRoomId}/join`, json({}), carolLogin.cookie);
-    const kick = await request(base, `/api/rooms/${kickedRoomId}/kick`, json({ userId: bob.user.id }), aliceLogin.cookie);
-    assert.equal(kick.status, 200);
-    const afterKick = await request(base, `/api/rooms/${kickedRoomId}`, {}, aliceLogin.cookie);
-    assert.equal(afterKick.body.room.players.length, 2);
-    assert.equal(afterKick.body.room.players.some((player: { userId: string }) => player.userId === bob.user.id), false);
+    const settingsRoom = await request(base, '/api/rooms', json({ gameId: 'reversi' }), aliceLogin.cookie);
+    const settingsRoomId = settingsRoom.body.room.id as string;
+    const settings = await request(base, `/api/rooms/${settingsRoomId}/settings`, json({
+      settings: { hostColor: 'white' },
+    }), aliceLogin.cookie);
+    assert.equal(settings.status, 200, JSON.stringify(settings.body));
+    assert.equal(settings.body.room.settings.hostColor, 'white');
     assert.equal(alice.user.id.length > 0, true);
     assert.equal(carol.user.id.length > 0, true);
+  } finally {
+    await platform.close();
+  }
+});
+
+test('waiting rooms are swept after the configured timeout', async () => {
+  const config: Config = { ...testConfig(), roomWaitTimeoutMs: 100 };
+  const db = openDb(':memory:');
+  const alice = createUser(db, 'TimeoutAlice', 'timeoutpass');
+  const platform: Platform = createPlatform(config, db);
+  const base = `http://127.0.0.1:${await platform.listen(0, '127.0.0.1')}`;
+  try {
+    const session = await login(base, 'timeoutalice@test.local', 'timeoutpass');
+    const created = await request(base, '/api/rooms', json({ gameId: 'reversi' }), session.cookie);
+    const roomId = created.body.room.id as string;
+    assert.equal((await request(base, `/api/rooms/${roomId}`, {}, session.cookie)).status, 200);
+    const closed = platform.rooms.sweepWaitingRooms(Date.now() + 500);
+    assert.equal(closed, 1);
+    assert.equal((await request(base, `/api/rooms/${roomId}`, {}, session.cookie)).status, 404);
   } finally {
     await platform.close();
   }

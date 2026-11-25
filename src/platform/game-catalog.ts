@@ -2,6 +2,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ICE_CHAOS_GAME, ICE_GAME } from '../games/ice/metadata.js';
 import { MOCK_GAME } from '../games/mock/metadata.js';
+import { REVERSI_GAME } from '../games/reversi/metadata.js';
 import type { GameId, GameMetadata } from '../protocol/protocol.js';
 
 export interface GameCatalogEntry {
@@ -28,6 +29,13 @@ export const GAME_CATALOG: GameCatalogEntry[] = [
     worker: {
       src: path.resolve(root, 'src/games/mock/worker.ts'),
       dist: path.resolve(root, 'dist/games/mock/worker.js'),
+    },
+  },
+  {
+    metadata: REVERSI_GAME,
+    worker: {
+      src: path.resolve(root, 'src/games/reversi/worker.ts'),
+      dist: path.resolve(root, 'dist/games/reversi/worker.js'),
     },
   },
   {

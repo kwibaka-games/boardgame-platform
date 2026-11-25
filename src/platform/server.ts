@@ -17,6 +17,7 @@ import {
   loginSchema,
   registerSchema,
   roomReadySchema,
+  roomSettingsSchema,
   verifyEmailSchema,
   type ClientToServerEvents,
   type ServerToClientEvents,
@@ -156,7 +157,7 @@ export function createPlatform(config: Config, db = openDb(config.dbPath)): Plat
     (matchId, gameId, message) => roomService.handleGameMessage(gameId, message),
     (matchId, reason) => roomService.handleWorkerCrash(matchId, reason),
   );
-  roomService = new RoomService(db, io, catalog, workers, workerHub);
+  roomService = new RoomService(db, io, catalog, workers, workerHub, config.roomWaitTimeoutMs);
 
   const mailer = createMailer(config);
   const authAttempts = new Map<string, number[]>();
@@ -585,6 +586,24 @@ export function createPlatform(config: Config, db = openDb(config.dbPath)): Plat
     }
     try {
       const room = roomService.setReady(currentUser(res), String(req.params.id ?? ''), parsed.data.ready);
+      res.json({ room });
+    } catch (error) {
+      res.status(400).json({ error: (error as Error).message });
+    }
+  });
+
+  app.post('/api/rooms/:id/settings', auth, profileReady, requireOrigin, (req, res) => {
+    const parsed = roomSettingsSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: '房间设置格式不正确' });
+      return;
+    }
+    try {
+      const room = roomService.updateSettings(
+        currentUser(res),
+        String(req.params.id ?? ''),
+        parsed.data.settings,
+      );
       res.json({ room });
     } catch (error) {
       res.status(400).json({ error: (error as Error).message });

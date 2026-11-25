@@ -277,8 +277,14 @@ function renderLobby() {
 }
 
 function openRules(gameId) {
-  const page = gameId === 'ice' || gameId === 'ice-chaos' ? '/rules/ice.html' : '/rules/mock-ttt.html';
-  $('rules-title').textContent = gameId === 'ice-chaos' ? '冰她 · 规则' : '规则';
+  const page =
+    gameId === 'ice' || gameId === 'ice-chaos'
+      ? '/rules/ice.html'
+      : gameId === 'reversi'
+        ? '/rules/reversi.html'
+        : '/rules/mock-ttt.html';
+  $('rules-title').textContent =
+    gameId === 'ice-chaos' ? '冰她 · 规则' : gameId === 'reversi' ? '黑白棋 · 规则' : '规则';
   $('rules-frame').src = page;
   $('rules-dialog').showModal();
 }
@@ -525,6 +531,9 @@ function renderRoom() {
     actions.appendChild(exit);
   } else {
     const me = room.players.find((player) => player.userId === state.user.id);
+    if (room.gameId === 'reversi' && room.status === 'waiting') {
+      renderReversiColorSetting(actions);
+    }
     if (room.status === 'waiting') {
       const ready = button(me?.ready ? '取消准备' : '准备', me?.ready ? 'fa-xmark' : 'fa-check');
       ready.addEventListener('click', () => void toggleReady(!me?.ready));
@@ -564,6 +573,42 @@ function renderRoom() {
         : room.status === 'finished'
           ? '对局结束，房主可以重新开始'
           : '';
+}
+
+function renderReversiColorSetting(actions) {
+  const room = state.room;
+  if (!room) return;
+  const hostColor = room.settings?.hostColor === 'white' ? 'white' : 'black';
+  const myColor = room.ownerId === state.user.id
+    ? hostColor
+    : (hostColor === 'black' ? 'white' : 'black');
+  const box = el('div', 'room-setting');
+  box.appendChild(el('span', 'room-setting-label', '黑白棋执子'));
+  if (room.ownerId === state.user.id) {
+    const group = el('div', 'segmented');
+    for (const color of ['black', 'white']) {
+      const choice = button(color === 'black' ? '黑棋' : '白棋', color === 'black' ? 'fa-circle' : 'fa-circle', `segmented-button${hostColor === color ? ' active' : ''}`);
+      choice.disabled = room.status !== 'waiting';
+      choice.addEventListener('click', () => void setReversiColor(color));
+      group.appendChild(choice);
+    }
+    box.appendChild(group);
+  }
+  box.appendChild(el('span', 'muted small', `你执${myColor === 'black' ? '黑棋' : '白棋'}`));
+  actions.appendChild(box);
+}
+
+async function setReversiColor(color) {
+  try {
+    const data = await api(`/api/rooms/${state.roomId}/settings`, {
+      method: 'POST',
+      body: JSON.stringify({ settings: { ...(state.room?.settings || {}), hostColor: color } }),
+    });
+    state.room = data.room;
+    renderRoom();
+  } catch (error) {
+    toast(error.message, true);
+  }
 }
 
 async function toggleReady(ready) {

@@ -118,6 +118,8 @@ export class RoomService {
   private readonly spectators = new Map<string, Map<string, SpectatorState>>();
   private readonly chatTimes = new Map<string, number[]>();
   private readonly startTimers = new Map<string, NodeJS.Timeout>();
+  private readonly waitTimer: NodeJS.Timeout;
+  private readonly waitTimeoutMs: number;
 
   constructor(
     private readonly db: Db,
@@ -125,7 +127,9 @@ export class RoomService {
     private readonly catalog: GameCatalog,
     private readonly workers: WorkerManager,
     private readonly hub: WorkerHub,
+    waitTimeoutMs = 15 * 60_000,
   ) {
+    this.waitTimeoutMs = waitTimeoutMs;
     // A game process owns live match state, so matches that were active when the
     // platform restarted cannot be resumed. They are excluded from stats.
     abortUnfinishedMatches(this.db);
@@ -137,6 +141,11 @@ export class RoomService {
     this.workers.setCrashHandler((matchId, reason) =>
       this.handleWorkerCrash(matchId, reason),
     );
+    this.waitTimer = setInterval(
+      () => this.sweepWaitingRooms(),
+      Math.min(60_000, Math.max(1_000, Math.floor(this.waitTimeoutMs / 4))),
+    );
+    this.waitTimer.unref();
   }
 
   listGames(): GameMetadata[] {
@@ -169,6 +178,7 @@ export class RoomService {
       owner_id: user.id,
       status: 'waiting',
       seats_json: JSON.stringify(seats),
+      settings_json: '{}',
       password_hash: password ? hashSecret(password) : null,
       match_id: null,
       created_at: now,
@@ -279,7 +289,7 @@ export class RoomService {
         matchId,
         gameId: runtime.record.game_id,
         seats: runtime.seats,
-        settings: {},
+        settings: this.matchSettings(runtime.record),
       });
       const timer = setTimeout(() => {
         this.handleWorkerCrash(matchId, 'worker register timeout');
@@ -305,7 +315,7 @@ export class RoomService {
       matchId,
       gameId,
       seats: runtime.seats,
-      settings: {},
+      settings: this.matchSettings(runtime.record),
     });
     if (!sent) this.handleWorkerCrash(matchId, 'worker was not reachable after register');
   }
@@ -412,6 +422,7 @@ export class RoomService {
     this.matchToRoom.delete(matchId);
     runtime.record.status = 'waiting';
     runtime.record.match_id = null;
+    runtime.record.created_at = Date.now();
     runtime.seats = runtime.seats.map((seat) => ({ ...seat, ready: false }));
     runtime.seq = 0;
     runtime.actionIds.clear();
@@ -634,6 +645,7 @@ export class RoomService {
     if (runtime.record.match_id) this.matchToRoom.delete(runtime.record.match_id);
     runtime.record.status = 'waiting';
     runtime.record.match_id = null;
+    runtime.record.created_at = Date.now();
     runtime.seq = 0;
     runtime.actionIds.clear();
     runtime.lastViews.clear();
@@ -645,6 +657,56 @@ export class RoomService {
   }
 
   /** Keep seat/chat names in sync after a profile rename. */
+  updateSettings(user: AuthedUser, roomId: string, settings: Record<string, unknown>): RoomView {
+    const runtime = this.runtime(roomId);
+    if (!runtime) throw new Error('room not found');
+    if (runtime.record.owner_id !== user.id) throw new Error('only the room owner can change settings');
+    if (runtime.record.status !== 'waiting') throw new Error('settings can only change before start');
+    runtime.record.settings_json = JSON.stringify(settings);
+    this.persist(runtime);
+    this.broadcastState(roomId);
+    return this.view(runtime.record, user.id, false);
+  }
+
+  /** Close waiting rooms that have been idle longer than the configured limit. */
+  sweepWaitingRooms(now = Date.now()): number {
+    let closed = 0;
+    const ids = new Set<string>([
+      ...this.runtimes.keys(),
+      ...listRooms(this.db, 1000).map((record) => record.id),
+    ]);
+    for (const id of ids) {
+      const runtime = this.runtime(id);
+      if (!runtime || runtime.record.status !== 'waiting') continue;
+      if (now - runtime.record.created_at < this.waitTimeoutMs) continue;
+      this.io.to(roomChannel(runtime.record.id)).emit('room.kicked', {
+        roomId: runtime.record.id,
+        reason: '房间等待开始超时，已自动关闭',
+      });
+      void this.io.in(roomChannel(runtime.record.id)).fetchSockets().then((sockets) => {
+        for (const socket of sockets) this.unsubscribe(socket as unknown as ClientSocket);
+      }).catch(() => {});
+      this.destroyRuntime(runtime);
+      closed += 1;
+    }
+    return closed;
+  }
+
+  private parseSettings(record: RoomRecord): Record<string, unknown> {
+    try {
+      const parsed = JSON.parse(record.settings_json) as unknown;
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+        ? (parsed as Record<string, unknown>)
+        : {};
+    } catch {
+      return {};
+    }
+  }
+
+  private matchSettings(record: RoomRecord): Record<string, unknown> {
+    return { ...this.parseSettings(record), hostUserId: record.owner_id };
+  }
+
   /** Remove a banned/deleted user from every room they occupy. */
   removeUserFromRooms(userId: string): void {
     for (const runtime of [...this.runtimes.values()]) {
@@ -692,6 +754,7 @@ export class RoomService {
     }
     runtime.record.status = 'waiting';
     runtime.record.match_id = null;
+    runtime.record.created_at = Date.now();
     runtime.seats = runtime.seats.map((seat) => ({ ...seat, ready: false }));
     runtime.seq = 0;
     runtime.actionIds.clear();
@@ -702,6 +765,7 @@ export class RoomService {
     runtime.record.status = 'waiting';
     runtime.seats = runtime.seats.map((seat) => ({ ...seat, ready: false }));
     runtime.record.match_id = null;
+    runtime.record.created_at = Date.now();
     runtime.seq = 0;
     runtime.actionIds.clear();
     runtime.lastViews.clear();
@@ -844,6 +908,7 @@ export class RoomService {
       spectatorChat: game?.spectatorChat ?? false,
       hasPassword: !!record.password_hash,
       allReady: this.players(record.id).every((player) => player.ready),
+      settings: this.parseSettings(record),
     };
   }
 
@@ -867,6 +932,7 @@ export class RoomService {
       spectatorChat: game?.spectatorChat ?? false,
       hasPassword: !!record.password_hash,
       allReady: this.players(record.id).every((player) => player.ready),
+      settings: this.parseSettings(record),
       spectators: this.spectatorList(record.id),
       you: {
         userId: userId ?? '',

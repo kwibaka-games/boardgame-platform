@@ -53,6 +53,7 @@ img-gen/
 web/games/ice.js
 web/games/ice-chaos.js
 web/games/mock-ttt.js
+web/games/reversi.js
 web/games/ice/
 
 # production certificates and env files are never tracked

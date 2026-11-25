@@ -15,7 +15,8 @@ platform (Node/TypeScript, SQLite)
   +-- game worker process (one per room/match)
 ```
 
-The platform owns accounts, rooms, chat, readiness, stats, and routing. A game
+The platform owns accounts, rooms, chat, readiness, waiting-room expiry, stats,
+and routing. A game
 worker owns its rules and state. A game worker never sends an unfiltered global
 state to the platform.
 
@@ -54,6 +55,7 @@ characters. Password hashes are scrypt; sessions are HttpOnly cookies.
 | POST | `/api/rooms/:id/join` | `{password?}` |
 | POST | `/api/rooms/:id/leave` | leave; abort active match |
 | POST | `/api/rooms/:id/ready` | `{ready:boolean}` |
+| POST | `/api/rooms/:id/settings` | `{settings}`; owner only, waiting only; generic game settings |
 | POST | `/api/rooms/:id/kick` | owner only, waiting only |
 | POST | `/api/rooms/:id/start` | owner only; all players ready |
 | POST | `/api/rooms/:id/restart` | owner only; after finished |
@@ -61,7 +63,11 @@ characters. Password hashes are scrypt; sessions are HttpOnly cookies.
 | GET | `/api/stats/me` | wins per game |
 
 Room passwords are optional six-digit numeric strings, stored as scrypt hashes.
-Ready state and room passwords belong to the platform, not the game worker.
+A waiting room that has not started within `ROOM_WAIT_TIMEOUT_MS` (default 15
+minutes) is closed; clients receive `room.kicked` with a timeout reason.
+Ready state, passwords, and pre-start room settings belong to the platform.
+Reversi stores `{hostColor:'black'|'white'}` and passes `hostUserId` with the
+settings to the worker at start.
 
 ### Administration
 
@@ -186,7 +192,8 @@ in `src/platform/game-catalog.ts`.
 
 A single implementation may expose multiple catalog IDs. Example: the `ice`
 repository provides `ice` (standard) and `ice-chaos` (chaos), both pointing at
-the same worker.
+the same worker. `reversi` is a two-player complete-information game; the host
+color is a room setting, and `spectatorChat` is enabled.
 
 ### Versioning
 
@@ -209,6 +216,7 @@ is independent from game versions.
 - Platform/game integration tests use an in-memory platform and real worker
   processes.
 - Browser modules are plain ES modules and are exercised manually or by a
-  browser test runner; they must not depend on Node APIs.
+  browser test runner; they must not depend on Node APIs. Reversi's move hints
+  are local UI state, so toggling them never changes the opponent's view.
 
 > Rate limits are scoped per email/account, not per source IP. Campus NAT commonly makes every player share one public IP, so IP-based limits would block the whole group.

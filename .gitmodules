@@ -4,3 +4,6 @@
 [submodule "src/games/mock"]
 	path = src/games/mock
 	url = ../kwibaka-game-mock-ttt.git
+[submodule "src/games/reversi"]
+	path = src/games/reversi
+	url = ../kwibaka-game-reversi.git

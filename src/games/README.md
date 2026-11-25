@@ -3,8 +3,9 @@
 Each directory here is a git submodule:
 
 ```text
-src/games/ice   -> github.com/ZangXuanyi/kwibaka-game-ice
-src/games/mock  -> github.com/ZangXuanyi/kwibaka-game-mock-ttt
+src/games/ice     -> github.com/ZangXuanyi/kwibaka-game-ice
+src/games/mock    -> github.com/ZangXuanyi/kwibaka-game-mock-ttt
+src/games/reversi -> github.com/ZangXuanyi/kwibaka-game-reversi
 ```
 
 A game repository contains its rules, worker, metadata, browser module, and

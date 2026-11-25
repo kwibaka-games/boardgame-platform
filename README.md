@@ -14,6 +14,8 @@ process, and each game implementation is versioned in its own git repository.
   kick before start, and one-click restart after a finished match.
 - Public room chat and spectator mode; hidden-information games can disable
   spectator chat.
+- Waiting rooms are closed automatically if a game has not started within 15
+  minutes (`ROOM_WAIT_TIMEOUT_MS`).
 - Wins-per-game statistics and an administrator area (search, ban/unban,
   force-rename).
 - Per-viewer game protocol; the platform routes views and never receives a full
@@ -22,10 +24,14 @@ process, and each game implementation is versioned in its own git repository.
 - 《冰冷的她醒来之前》 standard (`ice`) and chaos (`ice-chaos`) rules with
   private views, simultaneous choices, server-side decision timeouts, card art,
   and a browser UI.
+- Reversi / 黑白棋: host chooses black or white before start, per-player move
+  hints, live disc counts, resignation, pass handling, and spectator chat.
 - Mock tic-tac-toe worker as the reference implementation.
 - Self-contained FontAwesome Free assets, no CDN dependency.
 
 ![Ice game](docs/assets/ice-cards.png)
+
+![Reversi](docs/assets/reversi.png)
 
 ![Profile](docs/assets/profile.png)
 
@@ -54,6 +60,7 @@ src/platform/        HTTP, Socket.IO, SQLite, auth, rooms, worker management
 src/protocol/        shared protocol v1 types and zod validation
 src/games/ice/       git submodule: kwibaka-game-ice repository
 src/games/mock/      git submodule: kwibaka-game-mock-ttt repository
+src/games/reversi/   git submodule: kwibaka-game-reversi repository
 src/cli/             administrator bootstrap CLI
 web/                 platform shell, styles, rules pages, generated game UI
 scripts/             sync-games and ice fuzzer

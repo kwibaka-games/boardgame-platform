@@ -42,6 +42,7 @@ export interface RoomRecord {
   owner_id: string;
   status: 'waiting' | 'starting' | 'playing' | 'finished';
   seats_json: string;
+  settings_json: string;
   password_hash: string | null;
   match_id: string | null;
   created_at: number;
@@ -135,6 +136,7 @@ function migrate(db: Db): void {
       owner_id      TEXT NOT NULL,
       status        TEXT NOT NULL,
       seats_json    TEXT NOT NULL,
+      settings_json TEXT NOT NULL DEFAULT '{}',
       password_hash TEXT,
       match_id      TEXT,
       created_at    INTEGER NOT NULL,
@@ -178,6 +180,9 @@ function migrate(db: Db): void {
   const roomColumns = tableColumns(db, 'rooms');
   if (!roomColumns.some((column) => column.name === 'password_hash')) {
     db.exec('ALTER TABLE rooms ADD COLUMN password_hash TEXT');
+  }
+  if (!roomColumns.some((column) => column.name === 'settings_json')) {
+    db.exec("ALTER TABLE rooms ADD COLUMN settings_json TEXT NOT NULL DEFAULT '{}'");
   }
   const matchColumns = tableColumns(db, 'matches');
   if (!matchColumns.some((column) => column.name === 'status')) {
@@ -408,8 +413,9 @@ export function listRooms(db: Db, limit = 50): RoomRecord[] {
 export function insertRoom(db: Db, room: RoomRecord): void {
   db.prepare(
     `INSERT INTO rooms
-      (id, name, game_id, owner_id, status, seats_json, password_hash, match_id, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (id, name, game_id, owner_id, status, seats_json, settings_json, password_hash,
+       match_id, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     room.id,
     room.name,
@@ -417,6 +423,7 @@ export function insertRoom(db: Db, room: RoomRecord): void {
     room.owner_id,
     room.status,
     room.seats_json,
+    room.settings_json,
     room.password_hash,
     room.match_id,
     room.created_at,
@@ -428,20 +435,24 @@ export function updateRoom(
   db: Db,
   roomId: string,
   patch: Partial<
-    Pick<RoomRecord, 'status' | 'seats_json' | 'owner_id' | 'match_id' | 'name' | 'password_hash'>
+    Pick<
+      RoomRecord,
+      'status' | 'seats_json' | 'settings_json' | 'owner_id' | 'match_id' | 'name' | 'password_hash'
+    >
   >,
 ): void {
   const current = getRoom(db, roomId);
   if (!current) return;
   const next = { ...current, ...patch, updated_at: Date.now() };
   db.prepare(
-    `UPDATE rooms SET name = ?, owner_id = ?, status = ?, seats_json = ?, password_hash = ?,
-       match_id = ?, updated_at = ? WHERE id = ?`,
+    `UPDATE rooms SET name = ?, owner_id = ?, status = ?, seats_json = ?, settings_json = ?,
+       password_hash = ?, match_id = ?, updated_at = ? WHERE id = ?`,
   ).run(
     next.name,
     next.owner_id,
     next.status,
     next.seats_json,
+    next.settings_json,
     next.password_hash,
     next.match_id,
     next.updated_at,

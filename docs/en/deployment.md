@@ -51,6 +51,7 @@ Important variables:
 | `COOKIE_SECURE` | `1` behind HTTPS, `0` only for plain HTTP local tests. |
 | `GAME_SECRET` | Shared secret between platform and game workers. Generate a long random value. |
 | `SESSION_TTL_HOURS` | Login session lifetime. |
+| `ROOM_WAIT_TIMEOUT_MS` | Close a room that has not started within this many ms of creation/restart; default 15 minutes. |
 | `ADMIN_EMAIL` | Optional email that becomes administrator on registration. |
 | `EMAIL_DEBUG` | `1` shows verification codes in the UI/log; never use for a public site. |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` | Real email delivery. |

@@ -51,14 +51,18 @@ game worker 不允许发送未经裁剪的全局状态。
 | POST | `/api/rooms/:id/join` | `{password?}` |
 | POST | `/api/rooms/:id/leave` | 离开；进行中会中止本局 |
 | POST | `/api/rooms/:id/ready` | `{ready:boolean}` |
+| POST | `/api/rooms/:id/settings` | `{settings}`；仅房主、开始前可改；通用游戏设置 |
 | POST | `/api/rooms/:id/kick` | 仅房主、仅开始前 |
 | POST | `/api/rooms/:id/start` | 仅房主，且全员准备 |
 | POST | `/api/rooms/:id/restart` | 仅房主，结束后重开 |
 | GET | `/api/rooms/:id/messages` | 最近公开聊天 |
 | GET | `/api/stats/me` | 每款游戏胜场 |
 
-房间密码为可选 6 位数字，SQLite 中存 scrypt 哈希。准备状态和房密码属于
-platform，不属于 game worker。
+房间密码为可选 6 位数字，SQLite 中存 scrypt 哈希。等待中的房间超过
+`ROOM_WAIT_TIMEOUT_MS`（默认 15 分钟）仍未开始会被关闭，客户端收到带原因的
+`room.kicked`。准备状态、房密码和开始前的房间设置属于 platform。
+黑白棋用 `{hostColor:'black'|'white'}` 保存房主执子，开始时连同
+`hostUserId` 一起传给 worker。
 
 ### 管理
 
@@ -178,7 +182,8 @@ src/games/<name>/
 注册 worker 和 metadata。
 
 一个实现可以暴露多个 catalog ID：例如 `ice` 仓库同时提供 `ice`（标准）
-和 `ice-chaos`（混沌），两者指向同一个 worker。
+和 `ice-chaos`（混沌），两者指向同一个 worker。`reversi` 是双人完全信息
+游戏，房主执子属于房间设置，观战聊天开启。
 
 ### 版本管理
 
@@ -199,5 +204,6 @@ git commit -m "feat: bump ice game"
 - 游戏引擎单元测试在主仓库 `tests/`。
 - 平台/游戏集成测试使用内存 SQLite + 真实 worker 进程。
 - 浏览器模块是普通 ES Module，通过手工或浏览器测试运行器验证；不得依赖 Node API。
+  黑白棋的“提示”是本地 UI 状态，开关只影响自己的显示，不会改变对手视图。
 
 > 频率限制按邮箱/账号而不是按来源 IP 计算。校园网 NAT 下所有玩家通常共享同一个公网 IP，按 IP 限制会误伤整批玩家。
