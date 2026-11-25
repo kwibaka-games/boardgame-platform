@@ -1,0 +1,60 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# runtime data
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# secrets / local config
+.env
+.env.*
+!.env.example
+
+# logs
+*.log
+logs/
+
+# research snapshots (not part of the product)
+research/obg/
+research/lan-games/
+research/*.tar.gz
+research/*.zip
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/
+
+# local npm cache used during development
+.npm-cache/
+coverage/
+
+# local chromium profile
+.chrome/
+
+# local ACME state and certificates
+.acme/
+deploy/certs/
+deploy/.test-tls/
+
+# local card-image generator (provided separately; not part of the service)
+img-gen/
+
+# generated from game submodules (see scripts/sync-games.mjs)
+web/games/ice.js
+web/games/ice-chaos.js
+web/games/mock-ttt.js
+web/games/ice/
+
+# production certificates and env files are never tracked
+deploy/certs/
+deploy/.env

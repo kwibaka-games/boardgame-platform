@@ -1,0 +1,40 @@
+{
+  "name": "kwibaka-boardgame-platform",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A small self-hosted web board game platform with per-room language-agnostic game workers",
+  "license": "AGPL-3.0-only",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "prebuild": "npm run sync-games",
+    "build": "tsc -p tsconfig.json",
+    "predev:platform": "npm run sync-games",
+    "dev:platform": "tsx watch src/platform/main.ts",
+    "sync-games": "node scripts/sync-games.mjs",
+    "start:platform": "node dist/platform/main.js",
+    "user:add": "tsx src/cli/add-user.ts",
+    "test": "tsx --test tests/*.test.ts",
+    "fuzz:ice": "tsx scripts/fuzz-ice.ts"
+  },
+  "dependencies": {
+    "cookie": "^0.7.2",
+    "express": "^4.22.3",
+    "nodemailer": "^7.0.13",
+    "socket.io": "^4.8.4",
+    "ws": "^8.23.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/cookie": "^0.6.0",
+    "@types/express": "^4.17.25",
+    "@types/node": "^24.19.2",
+    "@types/nodemailer": "^8.0.2",
+    "@types/ws": "^8.18.2",
+    "socket.io-client": "^4.8.4",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  }
+}

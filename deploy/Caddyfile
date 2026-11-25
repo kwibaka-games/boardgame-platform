@@ -1,0 +1,26 @@
+# HTTPS entry point for the game server.
+# The certificate is issued by deploy/issue-cert.sh (DNS-01) and mounted from
+# deploy/certs/. This avoids depending on port 80 or a DNS plugin in Caddy.
+game.realkawaiibaka.com {
+	# Manual certificate issued by deploy/issue-cert.sh (DNS-01).
+	# Restart caddy after renewal: docker compose ... restart caddy
+	tls /etc/caddy/certs/fullchain.pem /etc/caddy/certs/key.pem
+
+	encode zstd gzip
+	reverse_proxy platform:8080
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+	}
+}
+
+# Local HTTP fallback for experiments without DNS/HTTPS. Comment out the site
+# block above before using this one.
+# :80 {
+# 	encode zstd gzip
+# 	reverse_proxy platform:8080
+# 	header {
+# 		-Server
+# 	}
+# }

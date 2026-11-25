@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>kwibaka 桌游室</title>
+    <link rel="stylesheet" href="/vendor/fontawesome/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="/vendor/fontawesome/css/solid.min.css" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">kwibaka<span>桌游室</span></div>
+      <div class="topbar-actions">
+        <button id="profile-button" class="ghost hidden" type="button" title="个人主页">
+          <i class="fa-solid fa-user"></i><span>个人主页</span>
+        </button>
+        <button id="admin-button" class="ghost hidden" type="button" title="管理">
+          <i class="fa-solid fa-shield-halved"></i><span>管理</span>
+        </button>
+        <div id="user-badge" class="user-chip hidden"></div>
+        <button id="logout" class="icon-button hidden" type="button" title="退出登录">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section id="login-view" class="panel narrow auth-panel">
+        <h1><i class="fa-solid fa-dice"></i> 进入桌游室</h1>
+        <div class="auth-tabs">
+          <button id="auth-login-tab" class="auth-tab active" type="button">登录</button>
+          <button id="auth-register-tab" class="auth-tab" type="button">注册</button>
+        </div>
+
+        <form id="login-form" class="stack">
+          <label>邮箱<input id="login-email" type="email" autocomplete="email" maxlength="254" required /></label>
+          <label>密码<input id="login-password" type="password" autocomplete="current-password" minlength="6" required /></label>
+          <button type="submit"><i class="fa-solid fa-right-to-bracket"></i> 登录</button>
+        </form>
+
+        <form id="register-form" class="stack hidden">
+          <label>邮箱<input id="register-email" type="email" autocomplete="email" maxlength="254" required /></label>
+          <label>用户名<input id="register-name" autocomplete="nickname" maxlength="32" required placeholder="1-32 个可见 ASCII 字符" /></label>
+          <label>密码<input id="register-password" type="password" autocomplete="new-password" minlength="8" required /></label>
+          <label>确认密码<input id="register-password2" type="password" autocomplete="new-password" minlength="8" required /></label>
+          <button type="submit"><i class="fa-solid fa-user-plus"></i> 注册</button>
+        </form>
+
+        <form id="verify-form" class="stack hidden">
+          <p id="verify-hint" class="muted"></p>
+          <label>邮箱<input id="verify-email" type="email" autocomplete="email" readonly /></label>
+          <label>6 位验证码<input id="verify-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required /></label>
+          <div class="row-actions">
+            <button type="submit"><i class="fa-solid fa-envelope-circle-check"></i> 验证并登录</button>
+            <button id="resend-verification" class="secondary" type="button">重新发送</button>
+            <button id="verify-back" class="ghost" type="button">返回登录</button>
+          </div>
+        </form>
+
+        <p id="auth-error" class="error"></p>
+      </section>
+
+      <section id="lobby-view" class="hidden">
+        <div class="row">
+          <h1>大厅</h1>
+          <div class="row-actions">
+            <button id="refresh-lobby" class="secondary" type="button"><i class="fa-solid fa-rotate"></i> 刷新</button>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="panel">
+            <h2>游戏</h2>
+            <div id="game-list" class="list"></div>
+          </div>
+          <div class="panel">
+            <h2>房间</h2>
+            <div id="room-list" class="list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="room-view" class="hidden">
+        <div class="row">
+          <button id="back-lobby" class="secondary" type="button"><i class="fa-solid fa-arrow-left"></i> 返回大厅</button>
+          <h1 id="room-title">房间</h1>
+          <span id="room-status" class="pill"></span>
+        </div>
+        <div class="room-grid">
+          <div class="panel">
+            <h2>玩家</h2>
+            <div id="player-list" class="list"></div>
+            <h3 class="subhead">观战</h3>
+            <div id="spectator-list" class="list"></div>
+            <div id="room-actions" class="stack"></div>
+          </div>
+          <div class="panel game-panel">
+            <h2>对局</h2>
+            <div id="game-area" class="game-area"></div>
+            <p id="game-status" class="muted"></p>
+          </div>
+          <div class="panel chat-panel">
+            <h2>房间聊天</h2>
+            <div id="chat-list" class="chat-list"></div>
+            <p id="chat-note" class="muted hidden"></p>
+            <form id="chat-form" class="chat-form">
+              <input id="chat-input" maxlength="300" placeholder="公开聊天，所有人可见" />
+              <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section id="profile-view" class="hidden">
+        <div class="row">
+          <button id="profile-back" class="secondary" type="button"><i class="fa-solid fa-arrow-left"></i> 返回大厅</button>
+          <h1>个人主页</h1>
+          <span id="profile-admin-badge" class="pill hidden">管理员</span>
+        </div>
+        <div class="profile-grid">
+          <div class="panel avatar-panel">
+            <div id="profile-avatar-wrap" class="avatar-large"><span id="profile-avatar-initial">?</span></div>
+            <input id="avatar-input" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+            <button id="avatar-upload" class="secondary" type="button"><i class="fa-solid fa-image"></i> 更换头像</button>
+            <p id="avatar-status" class="muted small"></p>
+          </div>
+
+          <div class="panel">
+            <h2>账号</h2>
+            <form id="profile-name-form" class="stack">
+              <label>用户名<input id="profile-name" maxlength="32" required /></label>
+              <button type="submit"><i class="fa-solid fa-check"></i> 保存用户名</button>
+            </form>
+            <hr />
+            <p class="muted small">邮箱（登录名）</p>
+            <p id="profile-email" class="strong"></p>
+            <p id="profile-id" class="muted small"></p>
+            <form id="email-change-form" class="stack compact-stack">
+              <label>新邮箱<input id="email-new" type="email" maxlength="254" required /></label>
+              <label>当前密码<input id="email-password" type="password" required /></label>
+              <button type="submit" class="secondary"><i class="fa-solid fa-envelope"></i> 发送验证码</button>
+            </form>
+            <form id="email-verify-form" class="stack compact-stack hidden">
+              <p id="email-verify-hint" class="muted small"></p>
+              <label>新邮箱验证码<input id="email-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required /></label>
+              <button type="submit"><i class="fa-solid fa-envelope-circle-check"></i> 确认换绑</button>
+            </form>
+            <p id="profile-message" class="muted small"></p>
+          </div>
+
+          <div class="panel">
+            <h2>统计</h2>
+            <p class="muted small">每款游戏的胜利场数</p>
+            <div id="stats-list" class="list"></div>
+            <p id="stats-total" class="muted small"></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin-view" class="hidden">
+        <div class="row">
+          <button id="admin-back" class="secondary" type="button"><i class="fa-solid fa-arrow-left"></i> 返回大厅</button>
+          <h1>用户管理</h1>
+        </div>
+        <div class="panel">
+          <div class="row-actions admin-search">
+            <input id="admin-search" placeholder="搜索用户名或邮箱" maxlength="80" />
+            <button id="admin-search-button" class="secondary" type="button"><i class="fa-solid fa-magnifying-glass"></i> 搜索</button>
+          </div>
+          <div id="admin-user-list" class="list"></div>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="rules-dialog" class="modal rules-modal">
+      <div class="modal-head">
+        <h2 id="rules-title">规则</h2>
+        <button id="rules-close" class="icon-button" type="button" title="关闭"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <iframe id="rules-frame" title="游戏规则"></iframe>
+    </dialog>
+
+    <dialog id="create-dialog" class="modal">
+      <form id="create-room-form" method="dialog" class="stack">
+        <div class="modal-head">
+          <h2 id="create-title">创建房间</h2>
+          <button id="create-close" class="icon-button" type="button" title="关闭"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <label>房间名（可选）<input id="create-name" maxlength="64" placeholder="默认使用你的用户名" /></label>
+        <label>房间密码（可选，6 位数字）<input id="create-password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="留空则无密码" /></label>
+        <div class="row-actions">
+          <button type="submit"><i class="fa-solid fa-plus"></i> 创建</button>
+          <button id="create-cancel" class="secondary" type="button">取消</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="join-password-dialog" class="modal">
+      <form id="join-password-form" method="dialog" class="stack">
+        <div class="modal-head">
+          <h2>输入房间密码</h2>
+          <button id="join-password-close" class="icon-button" type="button" title="关闭"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <p id="join-password-title" class="muted"></p>
+        <input id="join-password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required placeholder="6 位数字" />
+        <div class="row-actions">
+          <button type="submit"><i class="fa-solid fa-right-to-bracket"></i> 加入</button>
+          <button id="join-password-cancel" class="secondary" type="button">取消</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast hidden"></div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

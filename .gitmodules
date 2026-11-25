@@ -1,0 +1,6 @@
+[submodule "src/games/ice"]
+	path = src/games/ice
+	url = ../kwibaka-game-ice.git
+[submodule "src/games/mock"]
+	path = src/games/mock
+	url = ../kwibaka-game-mock-ttt.git
