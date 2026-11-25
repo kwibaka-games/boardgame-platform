@@ -198,7 +198,7 @@ color is a room setting, and `spectatorChat` is enabled. `alendo` uses a
 hints. The `gomoku` / `gomoku-seki` catalog entries share one engine: 11×11
 free-style (draw -> white win) and 15×15 comet-seki with black H8 / white J7 /
 black F10 and white to move (draw -> both lose). `gomoku-forbidden` adds
-specified openings and black-only overcalls (overline/double-four/double-three)
+specified openings and black-only forbidden points (overline/double-four/double-three)
 with a black-only hint toggle; `gomoku-rif` adds three-move swap and five-move
 two choices. Free/seki have no hint UI; coordinates use A-H, J-P (I skipped).
 
