@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>五子棋（RIF 完全规则）</title>
+  <link rel="stylesheet" href="/rules/gomoku.css">
+</head>
+<body>
+  <h1>五子棋（RIF 完全规则）</h1>
+  <p class="muted">2 人 · 完全信息 · 观战者可发言</p>
+
+  <h2>棋盘与指定开局</h2>
+  <ul>
+    <li>棋盘为 <strong>15×15</strong>，采用 RIF 开局流程。</li>
+    <li>黑方从 <strong>26 种职业开局</strong>中选择一种，系统自动摆放前三手（黑、白、黑）。</li>
+    <li>坐标列从 A 到 H 后直接到 J，不使用 I。</li>
+  </ul>
+
+  <h2>三手交换</h2>
+  <p>前三手后，白方可以选择是否交换黑白执子。交换后由新的白方下第 4 手。</p>
+
+  <h2>五手两打</h2>
+  <p>白方下完第 4 手后，黑方选择两个不同的空点作为第 5 手打点；白方选择保留其中一个，另一个不落子，然后白方下第 6 手。之后进入正常对局。</p>
+
+  <h2>黑棋禁手</h2>
+  <ul>
+    <li><strong>长连</strong>：黑棋连成六子及以上。</li>
+    <li><strong>双四</strong>：黑棋同时形成两个四。</li>
+    <li><strong>双三</strong>：黑棋同时形成两个活三。</li>
+  </ul>
+  <p>黑棋落在禁手点会被拒绝；白棋没有禁手。</p>
+
+  <h2>胜负</h2>
+  <ul>
+    <li>黑棋必须正好连成五子才能获胜。</li>
+    <li>白棋连成五子或更多即获胜。</li>
+    <li>棋盘填满仍无人获胜时判平局。</li>
+    <li>任意一方可以认输。</li>
+  </ul>
+
+  <h2>禁手提示</h2>
+  <p>黑棋可以使用“禁手提示”开关，用红色叉号标出当前禁手点；开关只影响黑棋自己的显示。白棋的提示按钮不可用。</p>
+</body>
+</html>

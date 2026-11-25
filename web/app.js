@@ -276,28 +276,22 @@ function renderLobby() {
   }
 }
 
+const RULES = {
+  'ice': { page: '/rules/ice.html', title: '冰她 · 规则' },
+  'ice-chaos': { page: '/rules/ice.html', title: '冰她 · 规则' },
+  'reversi': { page: '/rules/reversi.html', title: '黑白棋 · 规则' },
+  'alendo': { page: '/rules/alendo.html', title: '阿尔林铎棋 · 规则' },
+  'gomoku': { page: '/rules/gomoku.html', title: '五子棋（无禁手）· 规则' },
+  'gomoku-seki': { page: '/rules/gomoku-seki.html', title: '五子棋（无禁手，座子）· 规则' },
+  'gomoku-forbidden': { page: '/rules/gomoku-forbidden.html', title: '五子棋（仅禁手）· 规则' },
+  'gomoku-rif': { page: '/rules/gomoku-rif.html', title: '五子棋（RIF）· 规则' },
+  'mock-ttt': { page: '/rules/mock-ttt.html', title: '规则' },
+};
+
 function openRules(gameId) {
-  const page =
-    gameId === 'ice' || gameId === 'ice-chaos'
-      ? '/rules/ice.html'
-      : gameId === 'reversi'
-        ? '/rules/reversi.html'
-        : gameId === 'alendo'
-          ? '/rules/alendo.html'
-          : gameId === 'gomoku' || gameId === 'gomoku-seki' || gameId === 'gomoku-forbidden' || gameId === 'gomoku-rif'
-            ? '/rules/gomoku.html'
-            : '/rules/mock-ttt.html';
-  $('rules-title').textContent =
-    gameId === 'ice-chaos'
-      ? '冰她 · 规则'
-      : gameId === 'reversi'
-        ? '黑白棋 · 规则'
-        : gameId === 'alendo'
-          ? '阿尔林铎棋 · 规则'
-          : gameId === 'gomoku' || gameId === 'gomoku-seki' || gameId === 'gomoku-forbidden' || gameId === 'gomoku-rif'
-            ? '五子棋 · 规则'
-            : '规则';
-  $('rules-frame').src = page;
+  const rule = RULES[gameId] || { page: '/rules/mock-ttt.html', title: '规则' };
+  $('rules-title').textContent = rule.title;
+  $('rules-frame').src = rule.page;
   $('rules-dialog').showModal();
 }
 
