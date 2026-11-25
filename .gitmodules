@@ -10,3 +10,6 @@
 [submodule "src/games/alendo"]
 	path = src/games/alendo
 	url = ../kwibaka-game-alendo.git
+[submodule "src/games/gomoku"]
+	path = src/games/gomoku
+	url = ../kwibaka-game-gomoku.git

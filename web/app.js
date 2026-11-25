@@ -284,7 +284,9 @@ function openRules(gameId) {
         ? '/rules/reversi.html'
         : gameId === 'alendo'
           ? '/rules/alendo.html'
-          : '/rules/mock-ttt.html';
+          : gameId === 'gomoku' || gameId === 'gomoku-seki'
+            ? '/rules/gomoku.html'
+            : '/rules/mock-ttt.html';
   $('rules-title').textContent =
     gameId === 'ice-chaos'
       ? '冰她 · 规则'
@@ -292,7 +294,9 @@ function openRules(gameId) {
         ? '黑白棋 · 规则'
         : gameId === 'alendo'
           ? '阿尔林铎棋 · 规则'
-          : '规则';
+          : gameId === 'gomoku' || gameId === 'gomoku-seki'
+            ? '五子棋 · 规则'
+            : '规则';
   $('rules-frame').src = page;
   $('rules-dialog').showModal();
 }

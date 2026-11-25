@@ -194,7 +194,10 @@ A single implementation may expose multiple catalog IDs. Example: the `ice`
 repository provides `ice` (standard) and `ice-chaos` (chaos), both pointing at
 the same worker. `reversi` and `alendo` are two-player complete-information games; the host
 color is a room setting, and `spectatorChat` is enabled. `alendo` uses a
-96-triangle board from Hypergryph's 《来自星尘》 and always shows legal-move hints.
+96-triangle board from Hypergryph's 《来自星尘》 and always shows legal-move
+hints. The `gomoku` / `gomoku-seki` catalog entries share one engine: 11×11
+free-style (draw -> white win) and 15×15 comet-seki with black H8 / white I9
+and white to move (draw -> both lose). Gomoku has no hint UI.
 
 ### Versioning
 

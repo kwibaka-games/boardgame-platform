@@ -29,6 +29,12 @@ process, and each game implementation is versioned in its own git repository.
 - 阿尔林铎棋 / Alendo: triangular-board Othello from Hypergryph's
   《来自星尘》; 96-triangle board, six centre pieces, forced legal-move hints,
   live counts, resignation, and spectator chat.
+- 五子棋 / Gomoku:
+  - 11×11 free-style, no forbidden moves, black first; a full-board draw is a
+    white win.
+  - 15×15 free-style comet-seki setup (black H8, white I9), white first; a
+    full-board draw is a loss for both.
+  - No next-move hint UI.
 - Mock tic-tac-toe worker as the reference implementation.
 - Self-contained FontAwesome Free assets, no CDN dependency.
 
@@ -37,6 +43,10 @@ process, and each game implementation is versioned in its own git repository.
 ![Reversi](docs/assets/reversi.png)
 
 ![阿尔林铎棋](docs/assets/alendo.png)
+
+![五子棋](docs/assets/gomoku.png)
+
+![彗星座子五子棋](docs/assets/gomoku-seki.png)
 
 ![Profile](docs/assets/profile.png)
 
@@ -67,6 +77,7 @@ src/games/ice/       git submodule: kwibaka-game-ice repository
 src/games/mock/      git submodule: kwibaka-game-mock-ttt repository
 src/games/reversi/   git submodule: kwibaka-game-reversi repository
 src/games/alendo/    git submodule: kwibaka-game-alendo repository
+src/games/gomoku/    git submodule: kwibaka-game-gomoku repository (two catalog ids)
 src/cli/             administrator bootstrap CLI
 web/                 platform shell, styles, rules pages, generated game UI
 scripts/             sync-games and ice fuzzer

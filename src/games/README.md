@@ -7,6 +7,7 @@ src/games/ice     -> github.com/ZangXuanyi/kwibaka-game-ice
 src/games/mock    -> github.com/ZangXuanyi/kwibaka-game-mock-ttt
 src/games/reversi -> github.com/ZangXuanyi/kwibaka-game-reversi
 src/games/alendo  -> github.com/ZangXuanyi/kwibaka-game-alendo
+src/games/gomoku   -> github.com/ZangXuanyi/kwibaka-game-gomoku
 ```
 
 A game repository contains its rules, worker, metadata, browser module, and

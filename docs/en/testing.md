@@ -31,6 +31,8 @@ The suite covers:
   resignation, and a real platform/worker integration test.
 - Alendo 96-triangle geometry/strips, six-piece setup, host color, random
   full-game termination, and resignation.
+- Gomoku 11×11/15×15 setup, win detection (including overlines), white
+  first in seki, draw outcomes, and resignation.
 
 `npm test` uses an in-memory SQLite database and starts real worker child
 processes; no external services are needed.
