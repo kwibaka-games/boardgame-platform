@@ -1570,13 +1570,16 @@ button.alendo-button {
   width: min(100%, 560px);
   max-height: 62vh;
   margin: 0 auto;
+  background: #2f6b46;
+  border: 2px solid #1d4330;
+  border-radius: 8px;
   filter: drop-shadow(0 8px 28px rgb(0 0 0 / 35%));
 }
 
 .alendo-cell {
-  fill: #f3e9e2;
-  stroke: #5d5149;
-  stroke-width: 0.025;
+  fill: #3c7f56;
+  stroke: #1d4330;
+  stroke-width: 0.03;
   cursor: default;
   transition: fill 120ms ease;
 }
@@ -1586,11 +1589,11 @@ button.alendo-button {
 }
 
 .alendo-cell.playable:hover {
-  fill: #f9e2af;
+  fill: #478f62;
 }
 
 .alendo-cell.black {
-  fill: #1b1518;
+  fill: #181825;
 }
 
 .alendo-cell.white {
@@ -1698,88 +1701,83 @@ button.gomoku-button {
 }
 
 .gomoku-board {
-  --gomoku-size: 11;
-  display: grid;
-  grid-template-columns: repeat(var(--gomoku-size), minmax(0, 1fr));
+  display: block;
   width: min(100%, 560px);
-  aspect-ratio: 1;
+  max-height: 62vh;
   margin: 0 auto;
-  overflow: hidden;
   background: #d9b96e;
   border: 3px solid #8b6430;
   border-radius: 4px;
   box-shadow: 0 8px 28px rgb(0 0 0 / 35%);
 }
 
-.gomoku-board.size-11 {
-  --gomoku-size: 11;
+.gomoku-bg {
+  fill: #e4c77f;
+  stroke: #8b6430;
+  stroke-width: 0.03;
 }
 
-.gomoku-board.size-15 {
-  --gomoku-size: 15;
+.gomoku-grid {
+  stroke: #8b6430;
+  stroke-width: 0.025;
 }
 
-button.gomoku-cell {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  background: #e4c77f;
-  border: 1px solid rgb(104 73 31 / 55%);
-  border-radius: 0;
+.gomoku-star {
+  fill: #6e4b23;
+  opacity: 0.85;
+}
+
+.gomoku-cell {
+  outline: none;
+}
+
+.gomoku-hit {
+  fill: transparent;
+  pointer-events: none;
+}
+
+.gomoku-cell.playable .gomoku-hit {
+  pointer-events: all;
   cursor: pointer;
 }
 
-button.gomoku-cell:hover:not(:disabled) {
-  background: #f0d997;
+.gomoku-cell.playable:hover .gomoku-hit {
+  fill: rgb(255 255 255 / 18%);
 }
 
-button.gomoku-cell:disabled {
-  cursor: default;
-  opacity: 1;
+.gomoku-cell:focus .gomoku-hit {
+  fill: rgb(249 226 175 / 22%);
+  stroke: #f9e2af;
+  stroke-width: 0.04;
 }
 
 .gomoku-stone {
-  width: 82%;
-  height: 82%;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
+  pointer-events: none;
+  stroke-width: 0.02;
 }
 
 .gomoku-stone.black {
-  background: #1d1a20;
-  border: 1px solid #57505c;
+  fill: #1d1a20;
+  stroke: #57505c;
 }
 
 .gomoku-stone.white {
-  background: #fff9f2;
-  border: 1px solid #a69382;
+  fill: #fff9f2;
+  stroke: #a69382;
 }
 
-.gomoku-cell.last .gomoku-last-mark {
-  position: absolute;
-  width: 18%;
-  height: 18%;
-  border: 2px solid #e64553;
-  border-radius: 50%;
+.gomoku-win-ring {
+  fill: none;
+  stroke: #e64553;
+  stroke-width: 0.07;
+  pointer-events: none;
 }
 
-.gomoku-cell.winning {
-  background: #f9e2af;
-  box-shadow: inset 0 0 0 2px #e64553;
-}
-
-.gomoku-cell.star::after {
-  position: absolute;
-  width: 10%;
-  height: 10%;
-  background: #6e4b23;
-  border-radius: 50%;
-  content: "";
-  opacity: 0.8;
+.gomoku-last-mark {
+  fill: none;
+  stroke: #e64553;
+  stroke-width: 0.05;
+  pointer-events: none;
 }
 
 .gomoku-info {

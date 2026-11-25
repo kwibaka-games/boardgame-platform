@@ -32,7 +32,7 @@ process, and each game implementation is versioned in its own git repository.
 - 五子棋 / Gomoku:
   - 11×11 free-style, no forbidden moves, black first; a full-board draw is a
     white win.
-  - 15×15 free-style comet-seki setup (black H8, white I9), white first; a
+  - 15×15 free-style comet-seki setup (black H8, white J7, black F10), white first; a
     full-board draw is a loss for both.
   - No next-move hint UI.
 - Mock tic-tac-toe worker as the reference implementation.

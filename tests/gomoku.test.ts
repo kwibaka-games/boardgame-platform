@@ -64,7 +64,10 @@ test('seki gomoku uses 15x15, has the comet stones and white moves first', () =>
   const board = initialBoard('seki');
   assert.equal(board.length, 225);
   assert.equal(board[7 * 15 + 7], 'black');
-  assert.equal(board[8 * 15 + 8], 'white');
+  assert.equal(board[6 * 15 + 9], 'white');
+  assert.equal(board[9 * 15 + 5], 'black');
+  assert.equal(board.filter((cell) => cell === 'black').length, 2);
+  assert.equal(board.filter((cell) => cell === 'white').length, 1);
   assert.equal(firstTurn('seki'), 'white');
   const { sent } = createMatch('seki');
   const host = lastView(sent, 'host');
@@ -72,7 +75,7 @@ test('seki gomoku uses 15x15, has the comet stones and white moves first', () =>
   assert.equal(host.you.color, 'black');
   assert.equal(guest.you.color, 'white');
   assert.equal(host.turn, 'white');
-  assert.equal(actions(sent, 'guest').filter((action) => action.type === 'place').length, 223);
+  assert.equal(actions(sent, 'guest').filter((action) => action.type === 'place').length, 222);
   assert.equal(actions(sent, 'host').filter((action) => action.type === 'place').length, 0);
 });
 
