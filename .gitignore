@@ -57,6 +57,8 @@ web/games/reversi.js
 web/games/alendo.js
 web/games/gomoku.js
 web/games/gomoku-seki.js
+web/games/gomoku-rif.js
+web/games/gomoku-forbidden.js
 web/games/ice/
 
 # production certificates and env files are never tracked

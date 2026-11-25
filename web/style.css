@@ -1819,3 +1819,68 @@ button.gomoku-button {
     width: 100%;
   }
 }
+
+/* Gomoku opening / fifth / forbidden UI */
+.gomoku-opening {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.gomoku-opening-select {
+  min-width: 8rem;
+  padding: 0.35rem 0.45rem;
+  color: var(--text);
+  background: var(--mantle);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.gomoku-opening-name {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+button.gomoku-button.primary {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+button.gomoku-button.active {
+  color: var(--bg);
+  background: var(--peach);
+  border-color: var(--peach);
+}
+
+button.gomoku-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.gomoku-forbidden line {
+  stroke: #e64553;
+  stroke-width: 0.055;
+  pointer-events: none;
+}
+
+.gomoku-fifth {
+  fill: none;
+  stroke: #f9e2af;
+  stroke-width: 0.06;
+  pointer-events: none;
+}
+
+.gomoku-fifth-selected {
+  fill: none;
+  stroke: #f9e2af;
+  stroke-width: 0.1;
+  pointer-events: none;
+}

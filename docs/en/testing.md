@@ -33,6 +33,8 @@ The suite covers:
   full-game termination, and resignation.
 - Gomoku 11×11/15×15 setup, win detection (including overlines), white
   first in seki, draw outcomes, and resignation.
+- Gomoku specified openings, forbidden-point detection, black-only hint state,
+  three-move swap and five-move two-choice flow.
 
 `npm test` uses an in-memory SQLite database and starts real worker child
 processes; no external services are needed.

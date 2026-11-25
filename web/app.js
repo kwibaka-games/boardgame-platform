@@ -284,7 +284,7 @@ function openRules(gameId) {
         ? '/rules/reversi.html'
         : gameId === 'alendo'
           ? '/rules/alendo.html'
-          : gameId === 'gomoku' || gameId === 'gomoku-seki'
+          : gameId === 'gomoku' || gameId === 'gomoku-seki' || gameId === 'gomoku-forbidden' || gameId === 'gomoku-rif'
             ? '/rules/gomoku.html'
             : '/rules/mock-ttt.html';
   $('rules-title').textContent =
@@ -294,7 +294,7 @@ function openRules(gameId) {
         ? '黑白棋 · 规则'
         : gameId === 'alendo'
           ? '阿尔林铎棋 · 规则'
-          : gameId === 'gomoku' || gameId === 'gomoku-seki'
+          : gameId === 'gomoku' || gameId === 'gomoku-seki' || gameId === 'gomoku-forbidden' || gameId === 'gomoku-rif'
             ? '五子棋 · 规则'
             : '规则';
   $('rules-frame').src = page;
