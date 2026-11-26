@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>爱因斯坦棋规则</title>
+  <link rel="stylesheet" href="/rules/gomoku.css">
+</head>
+<body>
+  <h1>爱因斯坦棋</h1>
+  <p class="muted">2 人 · 骰棋 · 完全信息 · 观战者可发言</p>
+
+  <h2>棋盘与初始棋子</h2>
+  <p>棋盘为 <strong>5×5</strong>，行从上到下为 1–5，列从左到右为 A–E。</p>
+  <ul>
+    <li>黑棋：<strong>A1、A2、A3、B1、B2、C1</strong>。</li>
+    <li>白棋：<strong>C5、D4、D5、E3、E4、E5</strong>。</li>
+  </ul>
+  <p>每方 6 枚棋子，开局后、行棋前，双方分别给自己的 6 枚棋子编号 1–6，各编号使用一次。</p>
+
+  <h2>行棋</h2>
+  <p>黑棋先手，双方轮流。每回合系统掷 1D6，骰点公开。必须移动与骰点最接近的己方棋子；如果有多个棋子同样接近，选择编号较小的那个。</p>
+  <p>如果骰点对应的棋子已被吃掉，则从仍然存活的棋子中选择编号最接近的；距离相同取较小号。</p>
+  <ul>
+    <li>黑棋只能向右、向下、右下移动 <strong>1 格</strong>。</li>
+    <li>白棋只能向左、向上、左上移动 <strong>1 格</strong>。</li>
+    <li>落点如果已有棋子（无论敌我），该棋子被移出棋盘。</li>
+  </ul>
+
+  <h2>交互</h2>
+  <p>骰子由系统代掷。轮到玩家时，点击骰点指定编号的棋子，棋盘会显示该棋子可以到达的位置；点击目标位置完成移动。提示为强制显示，没有单独的提示按钮。</p>
+
+  <h2>胜负</h2>
+  <ul>
+    <li>黑棋到达 <strong>E5</strong> 或白棋到达 <strong>A1</strong>，该方立即获胜。</li>
+    <li>一方棋子全部被吃掉，另一方获胜。</li>
+    <li>任意一方可以认输。</li>
+  </ul>
+</body>
+</html>

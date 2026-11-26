@@ -13,6 +13,7 @@ Thanks for helping with the platform and its games.
 | Before She Rises / 冰她 | [`kwibaka-games/before-she-rises`](https://github.com/kwibaka-games/before-she-rises) |
 | Mock tic-tac-toe reference game | [`kwibaka-games/mock-ttt`](https://github.com/kwibaka-games/mock-ttt) |
 | Amazons / 亚马逊棋 | [`kwibaka-games/amazons`](https://github.com/kwibaka-games/amazons) |
+| Einstein chess / 爱因斯坦棋 | [`kwibaka-games/einstein`](https://github.com/kwibaka-games/einstein) |
 
 ## Platform changes
 
