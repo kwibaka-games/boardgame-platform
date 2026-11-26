@@ -22,3 +22,6 @@
 [submodule "src/games/red-gate"]
 	path = src/games/red-gate
 	url = ../red-gate.git
+[submodule "src/games/exploding-kittens"]
+	path = src/games/exploding-kittens
+	url = ../exploding-kittens.git

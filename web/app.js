@@ -327,6 +327,7 @@ const RULES = {
   'amazons': { page: '/rules/amazons.html', title: '亚马逊棋 · 规则' },
   'einstein': { page: '/rules/einstein.html', title: '爱因斯坦棋 · 规则' },
   'red-gate': { page: '/rules/red-gate.html', title: '红色的门和杀人鬼的钥匙 · 规则' },
+  'exploding-kittens': { page: '/rules/exploding-kittens.html', title: '炸弹猫 · 规则' },
   'gomoku': { page: '/rules/gomoku.html', title: '五子棋（无禁手）· 规则' },
   'gomoku-seki': { page: '/rules/gomoku-seki.html', title: '五子棋（无禁手，座子）· 规则' },
   'gomoku-forbidden': { page: '/rules/gomoku-forbidden.html', title: '五子棋（仅禁手）· 规则' },

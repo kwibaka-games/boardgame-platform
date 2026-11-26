@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
+import { randomUUID } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { io, type Socket } from 'socket.io-client';
 import { loadConfig, type Config } from '../src/platform/config.js';
 import { createPlatform, type Platform } from '../src/platform/server.js';
@@ -15,7 +17,7 @@ function testConfig(): Config {
     port: 0,
     host: '127.0.0.1',
     dbPath: ':memory:',
-    webDir: new URL('../web', import.meta.url).pathname,
+    webDir: fileURLToPath(new URL('../web', import.meta.url)),
     publicOrigin: null,
     cookieSecure: false,
     sessionTtlMs: 60 * 60 * 1000,
@@ -125,6 +127,94 @@ async function startTestPlatform(users: [string, string][]) {
   const port = await platform.listen(0, '127.0.0.1');
   return { platform, base: `http://127.0.0.1:${port}` };
 }
+
+test('exploding kittens runs a full multiplayer match through the platform worker', async () => {
+  const users = [['Ada', 'adapassword'], ['Bea', 'beapassword'], ['Cam', 'campassword']] as [string, string][];
+  const { platform, base } = await startTestPlatform(users);
+  const sockets: Socket[] = [];
+  try {
+    const [ada, bea, cam] = await Promise.all(users.map(([name, code]) => login(base, name, code)));
+    const game = await api(base, '/api/games', ada!);
+    assert.ok(game.games.some(({ id }: { id: string }) => id === 'exploding-kittens'));
+    for (const path of ['/games/exploding-kittens.js', '/rules/exploding-kittens.html']) {
+      const response = await fetch(`${base}${path}`);
+      assert.equal(response.status, 200, path);
+    }
+
+    const { room } = await api(base, '/api/rooms', ada!, {
+      method: 'POST', body: JSON.stringify({ gameId: 'exploding-kittens' }),
+    });
+    const roomPath = `/api/rooms/${room.id}`;
+    await api(base, `${roomPath}/join`, bea!, { method: 'POST', body: '{}' });
+    await readyAll(base, room.id, [ada!, bea!]);
+    type Envelope = {
+      matchId: string; seq: number;
+      view: {
+        schema: string; status: string; turn: string | null; direction: number | null; response?: object;
+        choice?: { type: string }; you: { userId: string; hand: { id: number }[] } | null;
+        players: { userId: string; alive: boolean; handCount: number }[];
+      };
+    };
+    const views: Envelope[] = [];
+    for (const [i, cookie] of [ada!, bea!, cam!].entries()) {
+      const socket = await connect(base, cookie);
+      sockets.push(socket);
+      socket.on('game.view', (data: Envelope) => { views[i] = data; });
+      assert.deepEqual(await emitAck(socket, 'room.subscribe', { roomId: room.id, spectate: i === 2 }), { ok: true });
+    }
+    await api(base, `${roomPath}/start`, ada!, { method: 'POST', body: '{}' });
+    await waitFor(() => views.filter(Boolean).length === 3);
+    assert.equal(views[2]!.view.schema, 'exploding-kittens-v1');
+    assert.equal(views[2]!.view.you, null);
+    assert.ok(views[2]!.view.players.every((player) => player.handCount === 6 && !('hand' in player)));
+    assert.equal(views[0]!.view.you!.hand.some((card) => views[1]!.view.you!.hand.some(({ id }) => id === card.id)), false);
+    for (const [i, socket] of sockets.slice(0, 2).entries()) socket.emit('game.ready', { matchId: views[i]!.matchId });
+    await waitFor(() => views[2]!.view.status === 'playing' && views.slice(0, 2).every(({ seq }) => seq === views[2]!.seq));
+    assert.ok(views[2]!.view.direction === 1 || views[2]!.view.direction === -1);
+    assert.equal(views[2]!.view.choice, undefined);
+
+    async function submit(i: number, action: object) {
+      const { matchId, seq } = views[i]!;
+      assert.deepEqual(await emitAck(sockets[i]!, 'game.action', { matchId, seq, actionId: randomUUID(), action }), { ok: true });
+    }
+    async function after(seq: number, response: boolean) {
+      await waitFor(() => views[2]!.seq > seq && Boolean(views[2]!.view.response) === response &&
+        views.slice(0, 2).every((item) => item.seq === views[2]!.seq), 5000, 5);
+    }
+    async function propose(i: number, action: object) {
+      const before = views[2]!.seq;
+      await submit(i, action);
+      await after(before, true);
+      const pending = views[2]!.seq;
+      await submit(0, { type: 'pass' });
+      await submit(1, { type: 'pass' });
+      await after(pending, false);
+    }
+
+    const result = waitEvent<{ result: { winners: string[] } }>(sockets[2]!, 'game.result', () => true, 10000);
+    for (let i = 0; i < 60 && views[2]!.view.status === 'playing'; i++) {
+      const view = views[2]!.view;
+      const actor = views.findIndex(({ view: own }) => own.you?.userId === view.turn);
+      assert.ok(actor === 0 || actor === 1);
+      if (view.choice?.type === 'defuse') {
+        const before = views[2]!.seq;
+        await submit(actor, { type: 'defuse', position: 0 });
+        await after(before, false);
+      } else if (view.choice?.type === 'insert-hole') {
+        await propose(actor, { type: 'insert-hole', position: 0 });
+      } else {
+        await propose(actor, { type: 'draw' });
+      }
+    }
+    assert.equal(views[2]!.view.status, 'finished');
+    const survivors = views[2]!.view.players.filter(({ alive }) => alive).map(({ userId }) => userId);
+    assert.equal(survivors.length, 1);
+    assert.deepEqual((await result).result.winners, survivors);
+  } finally {
+    for (const socket of sockets) socket.disconnect();
+    await platform.close();
+  }
+});
 
 test('two players can complete a mock game with per-player views and chat', async () => {
   const config = testConfig();
