@@ -39,6 +39,8 @@ The suite covers:
   turn switching, no-legal-turn loss, and resignation.
 - Einstein numbering, die/closest-number selection, one-square directions,
   capture-own behavior, and resignation.
+- Red Gate base deck, hidden/spectator views, door claims, killer-key identity,
+  all-four-key reset, expansion composition, and silent-moth chat policy.
 
 `npm test` uses an in-memory SQLite database and starts real worker child
 processes; no external services are needed.

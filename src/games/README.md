@@ -10,6 +10,7 @@ src/games/alendo  -> github.com/kwibaka-games/alendo
 src/games/gomoku   -> github.com/kwibaka-games/gomoku
 src/games/amazons  -> github.com/kwibaka-games/amazons
 src/games/einstein -> github.com/kwibaka-games/einstein
+src/games/red-gate -> github.com/kwibaka-games/red-gate
 ```
 
 A game repository contains its rules, worker, metadata, browser module, and

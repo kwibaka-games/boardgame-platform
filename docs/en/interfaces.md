@@ -205,6 +205,9 @@ two choices. Free/seki have no hint UI; coordinates use A-H, J-P (I skipped).
 arrow shot, with forced move/arrow targets for the current player. `einstein` is
 a 5×5 dice game: each side numbers its pieces, the system rolls 1D6 and the
 closest-numbered piece moves; forced targets and public dice are included.
+`red-gate` is a hidden-information card game. It sends complete spectator views,
+uses `spectatorChat: false`, and sends a `chat.policy` worker message to mute
+specific players (currently the holder of 沉默的毒蛾) in the platform chat.
 
 ### Versioning
 

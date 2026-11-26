@@ -4,6 +4,7 @@ const state = {
   rooms: [],
   room: null,
   spectating: false,
+  chatMuted: false,
   socket: null,
   roomId: null,
   view: null,
@@ -26,6 +27,31 @@ const state = {
   createGameId: null,
   adminUsers: [],
 };
+
+const RED_GATE_EXPANSIONS = [
+  ['guardian-key', '守护钥匙'],
+  ['danger-crack', '危险的门缝'],
+  ['dizzy-clock', '眩晕时钟'],
+  ['fbi-id', 'FBI证件'],
+  ['maze-secret', '迷宫的秘密'],
+  ['corpse-room', '有尸体的房间'],
+  ['grimoire', '魔导书'],
+  ['tattoo', '数字刺青'],
+  ['incense', '返魂香'],
+  ['fool-lamp', '愚弄之灯'],
+  ['whisper', '低声细语'],
+  ['neuro-gas', '神经瓦斯'],
+  ['axe', '杀人鬼的斧头'],
+  ['xray', 'X光照片'],
+  ['torture', '拷问室'],
+  ['dagger', '匕首'],
+  ['handcuff-key', '手铐钥匙'],
+  ['moth', '沉默的毒蛾'],
+  ['monitor', '监控室'],
+  ['gas-mask', '防毒面具'],
+  ['gift', '杀人鬼的礼物'],
+  ['fake-exit', '假的逃生出口'],
+];
 
 const $ = (id) => document.getElementById(id);
 
@@ -150,6 +176,7 @@ function showLogin() {
   state.room = null;
   state.roomId = null;
   state.spectating = false;
+  state.chatMuted = false;
   state.view = null;
   state.result = null;
   state.readyFor = null;
@@ -299,6 +326,7 @@ const RULES = {
   'alendo': { page: '/rules/alendo.html', title: '阿尔林铎棋 · 规则' },
   'amazons': { page: '/rules/amazons.html', title: '亚马逊棋 · 规则' },
   'einstein': { page: '/rules/einstein.html', title: '爱因斯坦棋 · 规则' },
+  'red-gate': { page: '/rules/red-gate.html', title: '红色的门和杀人鬼的钥匙 · 规则' },
   'gomoku': { page: '/rules/gomoku.html', title: '五子棋（无禁手）· 规则' },
   'gomoku-seki': { page: '/rules/gomoku-seki.html', title: '五子棋（无禁手，座子）· 规则' },
   'gomoku-forbidden': { page: '/rules/gomoku-forbidden.html', title: '五子棋（仅禁手）· 规则' },
@@ -353,6 +381,7 @@ async function openRoom(roomId, spectate = false) {
     state.room = data.room;
     state.roomId = roomId;
     state.spectating = spectate || !!data.room.you?.spectator;
+    state.chatMuted = false;
     state.view = null;
     state.actions = [];
     state.result = null;
@@ -440,6 +469,9 @@ function connectSocket() {
       state.view = null;
       state.result = null;
       void renderGame();
+    } else if (event?.type === 'chat.policy') {
+      state.chatMuted = !event.canChat;
+      renderRoom();
     }
   });
   socket.on('room.kicked', (payload) => {
@@ -551,11 +583,13 @@ function renderRoom() {
     }
   }
 
-  const canChat = !state.spectating || room.spectatorChat;
+  const canChat = (!state.spectating || room.spectatorChat) && !state.chatMuted;
   $('chat-form').classList.toggle('hidden', !canChat);
   $('chat-note').classList.toggle('hidden', canChat);
   if (!canChat) {
-    $('chat-note').textContent = '这个游戏是隐藏信息对局，观战者只能看牌，不能发言。';
+    $('chat-note').textContent = state.chatMuted
+      ? '你现在不能发言。'
+      : '这个游戏是隐藏信息对局，观战者只能看牌，不能发言。';
   }
   $('chat-input').placeholder = state.spectating
     ? '观战者发言，所有人可见'
@@ -571,6 +605,9 @@ function renderRoom() {
     const me = room.players.find((player) => player.userId === state.user.id);
     if ((room.gameId === 'reversi' || room.gameId === 'alendo') && room.status === 'waiting') {
       renderReversiColorSetting(actions);
+    }
+    if (room.gameId === 'red-gate' && room.status === 'waiting') {
+      renderRedGateSettings(actions);
     }
     if (room.status === 'waiting') {
       const ready = button(me?.ready ? '取消准备' : '准备', me?.ready ? 'fa-xmark' : 'fa-check');
@@ -634,6 +671,71 @@ function renderReversiColorSetting(actions) {
   }
   box.appendChild(el('span', 'muted small', `你执${myColor === 'black' ? '黑棋' : '白棋'}`));
   actions.appendChild(box);
+}
+
+function renderRedGateSettings(actions) {
+  const room = state.room;
+  if (!room) return;
+  const selected = new Set(
+    Array.isArray(room.settings?.expansions)
+      ? room.settings.expansions.filter((value) => typeof value === 'string')
+      : [],
+  );
+  const box = el('div', 'room-setting red-gate-setting');
+  box.appendChild(el('span', 'room-setting-label', '扩展卡'));
+  box.appendChild(
+    el(
+      'span',
+      'red-gate-expansion-summary',
+      selected.size
+        ? [...RED_GATE_EXPANSIONS]
+            .filter(([id]) => selected.has(id))
+            .map(([, name]) => name)
+            .join('、')
+        : '基础规则（未启用扩展）',
+    ),
+  );
+  if (room.ownerId === state.user.id) {
+    const edit = button('设置', 'fa-sliders', 'secondary');
+    edit.addEventListener('click', () => openRedGateExpansionDialog(selected));
+    box.appendChild(edit);
+  }
+  actions.appendChild(box);
+}
+
+function openRedGateExpansionDialog(selected) {
+  const list = $('red-gate-expansions-list');
+  list.replaceChildren();
+  for (const [id, name] of RED_GATE_EXPANSIONS) {
+    const label = el('label', 'red-gate-expansion-item');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = id;
+    checkbox.checked = selected.has(id);
+    label.append(checkbox, document.createTextNode(name));
+    list.appendChild(label);
+  }
+  $('red-gate-expansions-dialog').showModal();
+}
+
+async function saveRedGateExpansions() {
+  const list = $('red-gate-expansions-list');
+  const expansions = [...list.querySelectorAll('input[type=checkbox]:checked')].map(
+    (input) => input.value,
+  );
+  try {
+    const data = await api(`/api/rooms/${state.roomId}/settings`, {
+      method: 'POST',
+      body: JSON.stringify({
+        settings: { ...(state.room?.settings || {}), expansions },
+      }),
+    });
+    state.room = data.room;
+    $('red-gate-expansions-dialog').close();
+    renderRoom();
+  } catch (error) {
+    toast(error.message, true);
+  }
 }
 
 async function setReversiColor(color) {
@@ -709,6 +811,7 @@ async function forceLeaveRoom() {
   state.room = null;
   state.roomId = null;
   state.spectating = false;
+  state.chatMuted = false;
   state.view = null;
   state.result = null;
   state.matchId = null;
@@ -1262,6 +1365,9 @@ $('join-password-form').addEventListener('submit', async (event) => {
 });
 $('join-password-close').addEventListener('click', () => $('join-password-dialog').close());
 $('join-password-cancel').addEventListener('click', () => $('join-password-dialog').close());
+$('red-gate-expansions-close').addEventListener('click', () => $('red-gate-expansions-dialog').close());
+$('red-gate-expansions-cancel').addEventListener('click', () => $('red-gate-expansions-dialog').close());
+$('red-gate-expansions-save').addEventListener('click', () => void saveRedGateExpansions());
 
 // ── boot ───────────────────────────────────────────────────────────────────
 (async () => {

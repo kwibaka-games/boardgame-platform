@@ -150,6 +150,12 @@ export type GameToPlatform =
   | { v: 1; t: 'result'; matchId: MatchId; result: unknown }
   | {
       v: 1;
+      t: 'chat.policy';
+      matchId: MatchId;
+      mutedUserIds: UserId[];
+    }
+  | {
+      v: 1;
       t: 'error';
       matchId?: MatchId;
       playerId?: UserId;

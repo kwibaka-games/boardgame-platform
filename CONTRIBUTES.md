@@ -14,6 +14,7 @@ Thanks for helping with the platform and its games.
 | Mock tic-tac-toe reference game | [`kwibaka-games/mock-ttt`](https://github.com/kwibaka-games/mock-ttt) |
 | Amazons / 亚马逊棋 | [`kwibaka-games/amazons`](https://github.com/kwibaka-games/amazons) |
 | Einstein chess / 爱因斯坦棋 | [`kwibaka-games/einstein`](https://github.com/kwibaka-games/einstein) |
+| Red Gate / 红色的门和杀人鬼的钥匙 | [`kwibaka-games/red-gate`](https://github.com/kwibaka-games/red-gate) |
 
 ## Platform changes
 

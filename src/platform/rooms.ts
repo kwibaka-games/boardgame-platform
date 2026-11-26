@@ -49,6 +49,7 @@ interface RoomRuntime {
   seq: number;
   actionIds: Set<string>;
   lastViews: Map<string, { seq: number; view: unknown; actions?: unknown[] }>;
+  chatMuted: Set<string>;
 }
 
 interface SpectatorState {
@@ -192,6 +193,7 @@ export class RoomService {
       seq: 0,
       actionIds: new Set(),
       lastViews: new Map(),
+      chatMuted: new Set(),
     });
     return this.view(record, user.id, false);
   }
@@ -275,6 +277,7 @@ export class RoomService {
     runtime.seq = 0;
     runtime.actionIds.clear();
     runtime.lastViews.clear();
+    runtime.chatMuted.clear();
     this.persist(runtime);
     this.matchToRoom.set(matchId, roomId);
     insertMatch(this.db, {
@@ -357,6 +360,21 @@ export class RoomService {
           this.io
             .to(userChannel(message.to.slice('player:'.length)))
             .emit('game.event', { matchId: message.matchId, event: message.event });
+        }
+        return;
+      }
+      case 'chat.policy': {
+        const runtime = this.roomForMatch(message.matchId);
+        if (!runtime) return;
+        runtime.chatMuted = new Set(message.mutedUserIds);
+        for (const seat of runtime.seats) {
+          this.io.to(userChannel(seat.userId)).emit('game.event', {
+            matchId: message.matchId,
+            event: {
+              type: 'chat.policy',
+              canChat: !runtime.chatMuted.has(seat.userId),
+            },
+          });
         }
         return;
       }
@@ -524,6 +542,9 @@ export class RoomService {
     if (!isSpectator) {
       const seat = runtime.seats.find((candidate) => candidate.userId === socket.data.user.id);
       if (!seat) return { ok: false, error: 'not a player' };
+      if (runtime.chatMuted.has(socket.data.user.id)) {
+        return { ok: false, error: '你当前不能发言' };
+      }
     }
 
     const parsed = chatTextSchema.safeParse(text);
@@ -814,6 +835,7 @@ export class RoomService {
       seq: 0,
       actionIds: new Set(),
       lastViews: new Map(),
+      chatMuted: new Set(),
     };
     this.runtimes.set(roomId, runtime);
     if (record.match_id) this.matchToRoom.set(record.match_id, roomId);
