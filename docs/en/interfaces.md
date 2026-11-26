@@ -201,6 +201,8 @@ black F10 and white to move (draw -> both lose). `gomoku-forbidden` adds
 specified openings and black-only forbidden points (overline/double-four/double-three)
 with a black-only hint toggle; `gomoku-rif` adds three-move swap and five-move
 two choices. Free/seki have no hint UI; coordinates use A-H, J-P (I skipped).
+`amazons` is a 10×10 cell-based game: a queen-like move followed by a queen-like
+arrow shot, with forced move/arrow targets for the current player.
 
 ### Versioning
 

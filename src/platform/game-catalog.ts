@@ -4,6 +4,7 @@ import { ICE_CHAOS_GAME, ICE_GAME } from '../games/ice/metadata.js';
 import { MOCK_GAME } from '../games/mock/metadata.js';
 import { REVERSI_GAME } from '../games/reversi/metadata.js';
 import { ALENDO_GAME } from '../games/alendo/metadata.js';
+import { AMAZONS_GAME } from '../games/amazons/metadata.js';
 import { GOMOKU_FORBIDDEN_GAME, GOMOKU_GAME, GOMOKU_RIF_GAME, GOMOKU_SEKI_GAME } from '../games/gomoku/metadata.js';
 import type { GameId, GameMetadata } from '../protocol/protocol.js';
 
@@ -31,6 +32,13 @@ export const GAME_CATALOG: GameCatalogEntry[] = [
     worker: {
       src: path.resolve(root, 'src/games/mock/worker.ts'),
       dist: path.resolve(root, 'dist/games/mock/worker.js'),
+    },
+  },
+  {
+    metadata: AMAZONS_GAME,
+    worker: {
+      src: path.resolve(root, 'src/games/amazons/worker.ts'),
+      dist: path.resolve(root, 'dist/games/amazons/worker.js'),
     },
   },
   {

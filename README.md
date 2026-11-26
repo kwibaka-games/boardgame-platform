@@ -41,6 +41,9 @@ process, and each game implementation is versioned in its own git repository.
   - 15×15 RIF: specified opening, black forbidden points, three-move swap and
     five-move two choices.
   - Coordinates skip I (A-H, J-P). Free/seki have no hint UI.
+- 亚马逊棋 / Amazons: 10×10 cell board, four pieces per side, queen-like move
+  followed by a queen-like arrow shot; forced movement/arrow targets; a side
+  with no legal turn loses.
 - Mock tic-tac-toe worker as the reference implementation.
 - Self-contained FontAwesome Free assets, no CDN dependency.
 
@@ -55,6 +58,8 @@ process, and each game implementation is versioned in its own git repository.
 ![彗星座子五子棋](docs/assets/gomoku-seki.png)
 
 ![RIF 五子棋](docs/assets/gomoku-rif.png)
+
+![亚马逊棋](docs/assets/amazons.png)
 
 ![Profile](docs/assets/profile.png)
 
@@ -86,6 +91,7 @@ src/games/mock/      git submodule: mock-ttt repository
 src/games/reversi/   git submodule: reversi repository
 src/games/alendo/    git submodule: alendo repository
 src/games/gomoku/    git submodule: gomoku repository (four catalog ids)
+src/games/amazons/   git submodule: amazons repository
 src/cli/             administrator bootstrap CLI
 web/                 platform shell, styles, rules pages, generated game UI
 scripts/             sync-games and ice fuzzer
