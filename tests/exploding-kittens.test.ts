@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import type { Card, CardKind, DeckCard } from '../src/games/exploding-kittens/cards.js';
-import { ExplodingKittensMatch } from '../src/games/exploding-kittens/game.js';
+import type { Card, CardKind, DeckCard } from '../src/games/exploding-kittens-kwdbd/cards.js';
+import { ExplodingKittensMatch } from '../src/games/exploding-kittens-kwdbd/game.js';
 import type { GameToPlatform, Seat } from '../src/protocol/protocol.js';
 
 type View = {

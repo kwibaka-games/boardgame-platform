@@ -7,7 +7,7 @@ import { ALENDO_GAME } from '../games/alendo/metadata.js';
 import { AMAZONS_GAME } from '../games/amazons/metadata.js';
 import { EINSTEIN_GAME } from '../games/einstein/metadata.js';
 import { RED_GATE_GAME } from '../games/red-gate/metadata.js';
-import { EXPLODING_KITTENS_GAME } from '../games/exploding-kittens/metadata.js';
+import { EXPLODING_KITTENS_GAME } from '../games/exploding-kittens-kwdbd/metadata.js';
 import { GOMOKU_FORBIDDEN_GAME, GOMOKU_GAME, GOMOKU_RIF_GAME, GOMOKU_SEKI_GAME } from '../games/gomoku/metadata.js';
 import type { GameId, GameMetadata } from '../protocol/protocol.js';
 
@@ -40,8 +40,8 @@ export const GAME_CATALOG: GameCatalogEntry[] = [
   {
     metadata: EXPLODING_KITTENS_GAME,
     worker: {
-      src: path.resolve(root, 'src/games/exploding-kittens/worker.ts'),
-      dist: path.resolve(root, 'dist/games/exploding-kittens/worker.js'),
+      src: path.resolve(root, 'src/games/exploding-kittens-kwdbd/worker.ts'),
+      dist: path.resolve(root, 'dist/games/exploding-kittens-kwdbd/worker.js'),
     },
   },
   {
