@@ -1,5 +1,7 @@
 # kwibaka-boardgame-platform
 
+[![CI](https://github.com/kwibaka-games/boardgame-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/kwibaka-games/boardgame-platform/actions/workflows/ci.yml)
+
 A small self-hosted web board-game platform for a campus/friends group.
 Platform and game processes are isolated; each room gets its own game worker
 process, and each game implementation is versioned in its own git repository.
