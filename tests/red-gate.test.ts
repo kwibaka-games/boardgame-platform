@@ -131,3 +131,73 @@ test('silent moth sends a platform chat mute', () => {
   assert.ok(policy && policy.t === 'chat.policy');
   assert.deepEqual(policy.mutedUserIds, ['host']);
 });
+
+function internal(match: RedGateMatch): any {
+  return (match as unknown as { matches: Map<string, any> }).matches.get('r1');
+}
+
+function prepareEscape(match: RedGateMatch, types: string[], fakeExit = false) {
+  const state = internal(match);
+  const host = state.players.find((player: any) => player.userId === 'host');
+  const all = [...state.cards.values()];
+  for (const type of types) {
+    const card = all.find((candidate: any) => candidate.type === type && candidate.location === 'mansion');
+    if (!card) throw new Error(`missing ${type}`);
+    card.location = 'held';
+    card.ownerId = host.userId;
+    card.door = null;
+    card.claim = 'silver';
+    card.revealed = false;
+    if (type === 'killer-key') host.role = 'murderer';
+  }
+  if (fakeExit) {
+    const fake = all.find((card: any) => card.type === 'fake-exit');
+    fake.location = 'held';
+    fake.ownerId = host.userId;
+    fake.door = null;
+    fake.revealed = true;
+  }
+  const exit = all.find((card: any) => card.type === 'escape-exit');
+  return exit.door;
+}
+
+function openExit(match: RedGateMatch, door: number) {
+  match.handle({
+    v: 1, t: 'action', matchId: 'r1', playerId: 'host', seq: 100, actionId: 'exit',
+    action: { type: 'open', door },
+  });
+  match.handle({
+    v: 1, t: 'action', matchId: 'r1', playerId: 'host', seq: 101, actionId: 'escape',
+    action: { type: 'choice', choice: 'yes' },
+  });
+}
+
+test('escape with three silver keys wins for all good players', () => {
+  const { match } = start();
+  const door = prepareEscape(match, ['silver-key', 'silver-key', 'silver-key']);
+  openExit(match, door);
+  const state = internal(match);
+  assert.equal(state.phase, 'finished');
+  assert.equal(state.result.reason, 'escape');
+  assert.deepEqual(state.result.winners.sort(), ['guest', 'host', 'third']);
+});
+
+test('escape with the killer key kills everyone', () => {
+  const { match } = start();
+  const door = prepareEscape(match, ['silver-key', 'silver-key', 'killer-key']);
+  openExit(match, door);
+  const state = internal(match);
+  assert.equal(state.phase, 'finished');
+  assert.equal(state.result.reason, 'escape_failed');
+  assert.deepEqual(state.result.winners, []);
+});
+
+test('a fake exit can make a successful escape fail', () => {
+  const { match } = start({ expansions: ['fake-exit'] });
+  const door = prepareEscape(match, ['silver-key', 'silver-key', 'silver-key'], true);
+  openExit(match, door);
+  const state = internal(match);
+  assert.equal(state.phase, 'finished');
+  assert.equal(state.result.reason, 'fake_exit_failed');
+  assert.deepEqual(state.result.winners, []);
+});
