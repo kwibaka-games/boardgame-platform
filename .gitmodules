@@ -24,4 +24,4 @@
 	url = ../red-gate.git
 [submodule "src/games/exploding-kittens-kwdbd"]
 	path = src/games/exploding-kittens-kwdbd
-	url = ../exploding-kittens-kwdbd.git
+	url = https://github.com/Code-Wasp-942/exploding-kittens-kwdbd.git
