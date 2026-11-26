@@ -423,7 +423,11 @@ export function createPlatform(config: Config, db = openDb(config.dbPath)): Plat
       res.status(400).json({ error: '头像必须是 PNG/JPEG/WebP 图片' });
       return;
     }
-    updateUser(db, currentUser(res).id, { avatar: dataUrl || null });
+    updateUser(db, currentUser(res).id, {
+      avatar: dataUrl || null,
+      avatar_change_required: 0,
+    });
+    roomService.refreshUser(currentUser(res).id);
     const updated = getUserById(db, currentUser(res).id)!;
     res.json({ user: publicUser(updated) });
   });
@@ -688,6 +692,22 @@ export function createPlatform(config: Config, db = openDb(config.dbPath)): Plat
       io.in(userChannel(targetId)).disconnectSockets(true);
       roomService.removeUserFromRooms(targetId);
     }
+    res.json({ ok: true });
+  });
+
+  app.post('/api/admin/users/:id/force-avatar', auth, adminGate, requireOrigin, (req, res) => {
+    const targetId = String(req.params.id ?? '');
+    const target = getUserById(db, targetId);
+    if (!target) {
+      res.status(404).json({ error: '用户不存在' });
+      return;
+    }
+    updateUser(db, targetId, { avatar: null, avatar_change_required: 1 });
+    roomService.refreshUser(targetId);
+    io.to(userChannel(targetId)).emit('user.updated', {
+      avatarChangeRequired: true,
+      avatar: null,
+    });
     res.json({ ok: true });
   });
 

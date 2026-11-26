@@ -139,6 +139,20 @@ test('email registration, verification, admin, ban, force rename and email chang
     assert.equal(avatar.body.user.avatar, png);
     const badAvatar = await request(base, '/api/me/avatar', { method: 'PATCH', body: JSON.stringify({ dataUrl: 'data:text/html;base64,abc' }) }, alice.cookie);
     assert.equal(badAvatar.status, 400);
+
+    const bobAvatar = await request(base, '/api/me/avatar', { method: 'PATCH', body: JSON.stringify({ dataUrl: png }) }, bobAgain.cookie);
+    assert.equal(bobAvatar.status, 200);
+    const adminListWithAvatar = await request(base, '/api/admin/users', {}, alice.cookie);
+    assert.equal(adminListWithAvatar.body.users.find((user: { id: string }) => user.id === bob.user.id).avatar, png);
+
+    const forcedAvatar = await request(base, `/api/admin/users/${bob.user.id}/force-avatar`, json({}), alice.cookie);
+    assert.equal(forcedAvatar.status, 200);
+    const bobAfterAvatar = await request(base, '/api/me', {}, bobAgain.cookie);
+    assert.equal(bobAfterAvatar.body.user.avatar, null);
+    assert.equal(bobAfterAvatar.body.user.avatarChangeRequired, true);
+    const uploadAgain = await request(base, '/api/me/avatar', { method: 'PATCH', body: JSON.stringify({ dataUrl: png }) }, bobAgain.cookie);
+    assert.equal(uploadAgain.status, 200);
+    assert.equal(uploadAgain.body.user.avatarChangeRequired, false);
   } finally {
     await platform.close();
   }

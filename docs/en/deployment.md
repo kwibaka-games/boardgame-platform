@@ -20,7 +20,7 @@ Game workers are child processes and never receive a public port.
 Games live in separate repositories and are pinned as git submodules:
 
 ```bash
-git clone --recurse-submodules https://github.com/ZangXuanyi/kwibaka-boardgame-platform.git
+git clone --recurse-submodules https://github.com/kwibaka-games/boardgame-platform.git
 cd kwibaka-boardgame-platform
 
 # If you cloned without --recurse-submodules:

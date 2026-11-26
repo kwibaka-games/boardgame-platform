@@ -21,6 +21,7 @@ import {
   deleteRoom,
   finishMatch,
   getRoom,
+  getUserById,
   insertChat,
   insertMatch,
   insertRoom,
@@ -656,6 +657,18 @@ export class RoomService {
     return this.view(runtime.record, user.id, false);
   }
 
+  /** Refresh room displays after a profile avatar/flag change. */
+  refreshUser(userId: string): void {
+    for (const runtime of this.runtimes.values()) {
+      const inSeats = runtime.seats.some((seat) => seat.userId === userId);
+      const inSpectators = this.spectators.get(runtime.record.id)?.has(userId);
+      if (!inSeats && !inSpectators) continue;
+      this.broadcastPlayers(runtime.record.id);
+      this.broadcastSpectators(runtime.record.id);
+      this.broadcastState(runtime.record.id);
+    }
+  }
+
   /** Keep seat/chat names in sync after a profile rename. */
   updateSettings(user: AuthedUser, roomId: string, settings: Record<string, unknown>): RoomView {
     const runtime = this.runtime(roomId);
@@ -875,10 +888,14 @@ export class RoomService {
     if (byUser.size === 0) this.spectators.delete(roomId);
   }
 
-  private spectatorList(roomId: string): { userId: string; name: string }[] {
+  private spectatorList(roomId: string): { userId: string; name: string; avatar: string | null }[] {
     const byUser = this.spectators.get(roomId);
     if (!byUser) return [];
-    return [...byUser.entries()].map(([userId, state]) => ({ userId, name: state.name }));
+    return [...byUser.entries()].map(([userId, state]) => ({
+      userId,
+      name: state.name,
+      avatar: getUserById(this.db, userId)?.avatar ?? null,
+    }));
   }
 
   private players(roomId: string): PlayerView[] {
@@ -887,6 +904,7 @@ export class RoomService {
     const connected = this.playerConnections.get(roomId);
     return runtime.seats.map((seat) => ({
       ...seat,
+      avatar: getUserById(this.db, seat.userId)?.avatar ?? null,
       ready: !!seat.ready,
       connected: !!connected?.get(seat.userId)?.size,
     }));

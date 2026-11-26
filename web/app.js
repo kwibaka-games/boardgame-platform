@@ -92,6 +92,19 @@ function el(tag, className, text) {
   return node;
 }
 
+function avatarNode(person, className = 'item-avatar') {
+  const wrap = el('span', className);
+  if (person.avatar) {
+    const img = document.createElement('img');
+    img.src = person.avatar;
+    img.alt = '';
+    wrap.appendChild(img);
+  } else {
+    wrap.textContent = (person.name || '?').slice(0, 1).toUpperCase();
+  }
+  return wrap;
+}
+
 function statusLabel(status) {
   return {
     waiting: '等待中',
@@ -223,10 +236,13 @@ function renderLobby() {
     );
     item.appendChild(main);
     const actions = el('div', 'row-actions');
-    const rules = button('规则', 'fa-book', 'secondary');
-    rules.title = '查看规则';
+    const rules = button('', 'fa-book', 'secondary icon-button');
+    rules.title = '规则';
+    rules.setAttribute('aria-label', '规则');
     rules.addEventListener('click', () => openRules(game.id));
-    const create = button('创建房间', 'fa-plus');
+    const create = button('', 'fa-plus', 'icon-button');
+    create.title = '创建房间';
+    create.setAttribute('aria-label', '创建房间');
     create.addEventListener('click', () => openCreateDialog(game.id));
     actions.append(rules, create);
     item.appendChild(actions);
@@ -430,13 +446,23 @@ function connectSocket() {
     void forceLeaveRoom();
   });
   socket.on('user.updated', (payload) => {
-    if (!payload?.nameChangeRequired) return;
-    if (state.user) state.user.nameChangeRequired = true;
-    toast('管理员要求你修改用户名', true);
-    if (state.roomId) {
-      void forceLeaveRoom().then(() => showProfile(true));
-    } else {
-      void showProfile(true);
+    if (payload?.avatarChangeRequired) {
+      if (state.user) {
+        state.user.avatarChangeRequired = true;
+        state.user.avatar = payload.avatar ?? null;
+      }
+      renderChrome();
+      if (!$('profile-view').classList.contains('hidden')) renderProfile();
+      toast('管理员要求你更换头像', true);
+    }
+    if (payload?.nameChangeRequired) {
+      if (state.user) state.user.nameChangeRequired = true;
+      toast('管理员要求你修改用户名', true);
+      if (state.roomId) {
+        void forceLeaveRoom().then(() => showProfile(true));
+      } else {
+        void showProfile(true);
+      }
     }
   });
   socket.on('error', (payload) => {
@@ -486,7 +512,9 @@ function renderRoom() {
     title.append(dot, document.createTextNode(player.name));
     if (player.userId === state.user.id) title.appendChild(el('span', 'tiny-badge', '你'));
     if (player.userId === room.ownerId) title.appendChild(el('span', 'tiny-badge owner-badge', '房主'));
-    main.appendChild(title);
+    const head = el('div', 'item-head');
+    head.append(avatarNode(player), title);
+    main.appendChild(head);
     const details = el('div', 'item-sub');
     details.appendChild(document.createTextNode(`座位 ${player.seat + 1}`));
     if (room.status === 'waiting') {
@@ -513,7 +541,9 @@ function renderRoom() {
     for (const spectator of room.spectators) {
       const item = el('div', 'item');
       const main = el('div', 'item-main');
-      main.appendChild(el('div', 'item-title', spectator.name));
+      const head = el('div', 'item-head');
+      head.append(avatarNode(spectator), el('div', 'item-title', spectator.name));
+      main.appendChild(head);
       item.appendChild(main);
       spectatorList.appendChild(item);
     }
@@ -818,6 +848,8 @@ async function showProfile(forceRename = false) {
     if (forceRename || me.user.nameChangeRequired) {
       $('profile-name').focus();
       $('profile-message').textContent = '管理员要求你更换一个新的用户名后才能继续游戏。';
+    } else if (me.user.avatarChangeRequired) {
+      $('avatar-status').textContent = '管理员要求你更换头像。';
     }
   } catch (error) {
     toast(error.message, true);
@@ -832,7 +864,7 @@ function renderProfile() {
   $('profile-id').textContent = `UUID: ${user.id}`;
   $('profile-admin-badge').classList.toggle('hidden', !user.isAdmin);
   $('profile-message').textContent = '';
-  $('avatar-status').textContent = '';
+  $('avatar-status').textContent = user.avatarChangeRequired ? '管理员要求你更换头像。' : '';
 
   const wrap = $('profile-avatar-wrap');
   wrap.replaceChildren();
@@ -1008,7 +1040,10 @@ function renderAdmin() {
     if (user.isAdmin) title.appendChild(el('span', 'tiny-badge owner-badge', '管理员'));
     if (user.disabled) title.appendChild(el('span', 'tiny-badge danger-badge', '已封禁'));
     if (user.nameChangeRequired) title.appendChild(el('span', 'tiny-badge', '待改名'));
-    main.appendChild(title);
+    if (user.avatarChangeRequired) title.appendChild(el('span', 'tiny-badge', '待换头像'));
+    const head = el('div', 'item-head');
+    head.append(avatarNode(user), title);
+    main.appendChild(head);
     main.appendChild(el('div', 'item-sub', `${user.email} · 胜场 ${user.wins || 0}`));
     item.appendChild(main);
     const actions = el('div', 'row-actions');
@@ -1020,6 +1055,10 @@ function renderAdmin() {
       rename.disabled = !!user.nameChangeRequired;
       rename.addEventListener('click', () => void forceRename(user));
       actions.appendChild(rename);
+      const avatar = button('要求换头像', 'fa-image', 'secondary');
+      avatar.disabled = !!user.avatarChangeRequired;
+      avatar.addEventListener('click', () => void forceAvatar(user));
+      actions.appendChild(avatar);
     }
     item.appendChild(actions);
     list.appendChild(item);
@@ -1054,6 +1093,22 @@ async function forceRename(user) {
     );
     renderAdmin();
     toast('已要求该用户改名');
+  } catch (error) {
+    toast(error.message, true);
+  }
+}
+
+async function forceAvatar(user) {
+  if (!window.confirm(`要求 ${user.name} 更换头像？当前头像会被移除。`)) return;
+  try {
+    await api(`/api/admin/users/${user.id}/force-avatar`, { method: 'POST', body: '{}' });
+    state.adminUsers = state.adminUsers.map((candidate) =>
+      candidate.id === user.id
+        ? { ...candidate, avatar: null, avatarChangeRequired: true }
+        : candidate,
+    );
+    renderAdmin();
+    toast('已要求该用户更换头像');
   } catch (error) {
     toast(error.message, true);
   }

@@ -1,15 +1,15 @@
 [submodule "src/games/ice"]
 	path = src/games/ice
-	url = ../kwibaka-game-ice.git
+	url = ../before-she-rises.git
 [submodule "src/games/mock"]
 	path = src/games/mock
-	url = ../kwibaka-game-mock-ttt.git
+	url = ../mock-ttt.git
 [submodule "src/games/reversi"]
 	path = src/games/reversi
-	url = ../kwibaka-game-reversi.git
+	url = ../reversi.git
 [submodule "src/games/alendo"]
 	path = src/games/alendo
-	url = ../kwibaka-game-alendo.git
+	url = ../alendo.git
 [submodule "src/games/gomoku"]
 	path = src/games/gomoku
-	url = ../kwibaka-game-gomoku.git
+	url = ../gomoku.git

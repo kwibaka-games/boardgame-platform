@@ -11,6 +11,7 @@ export interface UserRecord {
   password_hash: string;
   email_verified: number;
   avatar: string | null;
+  avatar_change_required: number;
   is_admin: number;
   name_change_required: number;
   disabled: number;
@@ -101,6 +102,7 @@ function migrate(db: Db): void {
       password_hash         TEXT NOT NULL,
       email_verified        INTEGER NOT NULL DEFAULT 0,
       avatar                TEXT,
+      avatar_change_required INTEGER NOT NULL DEFAULT 0,
       is_admin              INTEGER NOT NULL DEFAULT 0,
       name_change_required  INTEGER NOT NULL DEFAULT 0,
       disabled              INTEGER NOT NULL DEFAULT 0,
@@ -220,9 +222,10 @@ export function countUsers(db: Db): number {
 export function insertUser(db: Db, user: UserRecord): void {
   db.prepare(
     `INSERT INTO users
-      (id, name, email, password_hash, email_verified, avatar, is_admin,
-       name_change_required, disabled, ban_reason, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (id, name, email, password_hash, email_verified, avatar,
+       avatar_change_required, is_admin, name_change_required, disabled, ban_reason,
+       created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     user.id,
     user.name,
@@ -230,6 +233,7 @@ export function insertUser(db: Db, user: UserRecord): void {
     user.password_hash,
     user.email_verified,
     user.avatar,
+    user.avatar_change_required,
     user.is_admin,
     user.name_change_required,
     user.disabled,
@@ -246,6 +250,7 @@ export type UserPatch = Partial<
     | 'password_hash'
     | 'email_verified'
     | 'avatar'
+    | 'avatar_change_required'
     | 'is_admin'
     | 'name_change_required'
     | 'disabled'

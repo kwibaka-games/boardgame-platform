@@ -51,6 +51,7 @@ export interface ChatMessage {
 export interface PlayerView {
   userId: UserId;
   name: string;
+  avatar: string | null;
   seat: number;
   connected: boolean;
   ready: boolean;
@@ -88,7 +89,7 @@ export interface RoomView {
   hasPassword: boolean;
   allReady: boolean;
   settings: Record<string, unknown>;
-  spectators: { userId: UserId; name: string }[];
+  spectators: { userId: UserId; name: string; avatar: string | null }[];
   you: { userId: UserId; seat: number | null; spectator: boolean };
 }
 
@@ -185,7 +186,7 @@ export interface ServerToClientEvents {
   'room.players': (players: PlayerView[]) => void;
   'room.spectators': (spectators: { userId: string; name: string }[]) => void;
   'room.kicked': (payload: { roomId: string; reason?: string }) => void;
-  'user.updated': (payload: { nameChangeRequired?: boolean }) => void;
+  'user.updated': (payload: { nameChangeRequired?: boolean; avatarChangeRequired?: boolean; avatar?: string | null }) => void;
   'chat.message': (message: ChatMessage) => void;
   'game.view': (payload: {
     matchId: string;

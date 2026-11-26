@@ -23,6 +23,7 @@ export interface PublicUser {
   name: string;
   email: string;
   avatar: string | null;
+  avatarChangeRequired: boolean;
   isAdmin: boolean;
   nameChangeRequired: boolean;
 }
@@ -101,6 +102,7 @@ export function createUser(
     password_hash: hashSecret(inviteCode),
     email_verified: options.verified === false ? 0 : 1,
     avatar: null,
+    avatar_change_required: 0,
     is_admin: isAdmin ? 1 : 0,
     name_change_required: 0,
     disabled: 0,
@@ -134,6 +136,7 @@ export function createUnverifiedUser(
     password_hash: hashSecret(password),
     email_verified: 0,
     avatar: null,
+    avatar_change_required: 0,
     is_admin: isAdmin ? 1 : 0,
     name_change_required: 0,
     disabled: 0,
@@ -154,6 +157,7 @@ export function publicUser(user: UserRecord): PublicUser {
     name: user.name,
     email: user.email,
     avatar: user.avatar,
+    avatarChangeRequired: !!user.avatar_change_required,
     isAdmin: !!user.is_admin,
     nameChangeRequired: !!user.name_change_required,
   };

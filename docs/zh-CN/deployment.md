@@ -18,7 +18,7 @@ Linux/macOS 主机。
 游戏是独立仓库，通过 git submodule 固定版本：
 
 ```bash
-git clone --recurse-submodules https://github.com/ZangXuanyi/kwibaka-boardgame-platform.git
+git clone --recurse-submodules https://github.com/kwibaka-games/boardgame-platform.git
 cd kwibaka-boardgame-platform
 
 # 如果克隆时没带 submodule：

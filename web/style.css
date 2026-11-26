@@ -1884,3 +1884,42 @@ button.gomoku-button:disabled {
   stroke-width: 0.1;
   pointer-events: none;
 }
+
+/* Player / admin avatars */
+.item-head {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.item-head .item-title {
+  min-width: 0;
+}
+
+.item-avatar {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.item-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#game-list .row-actions {
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+}

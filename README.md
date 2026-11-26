@@ -79,11 +79,11 @@ an explicit `to` target.
 ```text
 src/platform/        HTTP, Socket.IO, SQLite, auth, rooms, worker management
 src/protocol/        shared protocol v1 types and zod validation
-src/games/ice/       git submodule: kwibaka-game-ice repository
-src/games/mock/      git submodule: kwibaka-game-mock-ttt repository
-src/games/reversi/   git submodule: kwibaka-game-reversi repository
-src/games/alendo/    git submodule: kwibaka-game-alendo repository
-src/games/gomoku/    git submodule: kwibaka-game-gomoku repository (four catalog ids)
+src/games/ice/       git submodule: before-she-rises repository
+src/games/mock/      git submodule: mock-ttt repository
+src/games/reversi/   git submodule: reversi repository
+src/games/alendo/    git submodule: alendo repository
+src/games/gomoku/    git submodule: gomoku repository (four catalog ids)
 src/cli/             administrator bootstrap CLI
 web/                 platform shell, styles, rules pages, generated game UI
 scripts/             sync-games and ice fuzzer
@@ -99,7 +99,7 @@ Game submodules are the source of truth for both rules and browser modules.
 ## Quick start
 
 ```bash
-git clone --recurse-submodules https://github.com/ZangXuanyi/kwibaka-boardgame-platform.git
+git clone --recurse-submodules https://github.com/kwibaka-games/boardgame-platform.git
 cd kwibaka-boardgame-platform
 npm install
 
@@ -152,6 +152,12 @@ contract.
 - Keep `EMAIL_DEBUG=0` on a public deployment.
 - Do not expose the platform or worker ports directly; only the reverse proxy.
 - Back up the SQLite database and certificate separately.
+
+## Contributing
+
+See [CONTRIBUTES.md](CONTRIBUTES.md). Platform changes go to this repository; game
+changes go to the corresponding game repository; new games are added as git
+submodules.
 
 ## License
 
