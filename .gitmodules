@@ -19,3 +19,6 @@
 [submodule "src/games/einstein"]
 	path = src/games/einstein
 	url = ../einstein.git
+[submodule "src/games/red-gate"]
+	path = src/games/red-gate
+	url = ../red-gate.git

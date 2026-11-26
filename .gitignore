@@ -60,9 +60,14 @@ web/games/gomoku-seki.js
 web/games/gomoku-rif.js
 web/games/amazons.js
 web/games/einstein.js
+web/games/red-gate.js
+web/games/red-gate/
 web/games/gomoku-forbidden.js
 web/games/ice/
 
 # production certificates and env files are never tracked
 deploy/certs/
 deploy/.env
+
+# local image-generation helpers, not part of the platform
+tools/

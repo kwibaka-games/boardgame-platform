@@ -46,6 +46,9 @@ process, and each game implementation is versioned in its own git repository.
   with no legal turn loses.
 - 爱因斯坦棋 / Einstein chess: 5×5 numbered pieces, system 1D6, closest-number
   move (tie -> lower), forced target display, corner/capture-all win.
+- 红色的门和杀人鬼的钥匙 / Red Gate: 3–8 player hidden-role card game with
+  numbered doors, silver keys, deception, 22 optional expansion cards, and
+  spectator/mute chat restrictions.
 - Mock tic-tac-toe worker as the reference implementation.
 - Self-contained FontAwesome Free assets, no CDN dependency.
 
@@ -64,6 +67,8 @@ process, and each game implementation is versioned in its own git repository.
 ![亚马逊棋](docs/assets/amazons.png)
 
 ![爱因斯坦棋](docs/assets/einstein.png)
+
+![红色的门和杀人鬼的钥匙](docs/assets/red-gate.png)
 
 ![Profile](docs/assets/profile.png)
 
@@ -97,6 +102,7 @@ src/games/alendo/    git submodule: alendo repository
 src/games/gomoku/    git submodule: gomoku repository (four catalog ids)
 src/games/amazons/   git submodule: amazons repository
 src/games/einstein/  git submodule: einstein repository
+src/games/red-gate/  git submodule: red-gate repository
 src/cli/             administrator bootstrap CLI
 web/                 platform shell, styles, rules pages, generated game UI
 scripts/             sync-games and ice fuzzer
