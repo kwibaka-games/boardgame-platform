@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>亚马逊棋规则</title>
+  <link rel="stylesheet" href="/rules/gomoku.css">
+</head>
+<body>
+  <h1>亚马逊棋</h1>
+  <p class="muted">2 人 · 完全信息 · 观战者可发言</p>
+
+  <h2>棋盘与棋子</h2>
+  <ul>
+    <li>棋盘为 <strong>10×10</strong>，棋子与障碍物都放在格子中。</li>
+    <li>行从上到下为 1–10；列从左到右为 A–K，跳过 I。</li>
+    <li>黑棋初始位置：<strong>A4、D1、G1、K4</strong>。</li>
+    <li>白棋初始位置：<strong>A7、D10、G10、K7</strong>。</li>
+    <li>黑棋先下。</li>
+  </ul>
+
+  <h2>回合</h2>
+  <p>每个回合必须依次完成两件事：</p>
+  <ol>
+    <li><strong>移动</strong>：选择自己的任意一枚棋子，沿横、竖或斜线走任意格数并停下；不能穿过障碍物或其他棋子。</li>
+    <li><strong>射箭</strong>：从刚移动到的位置，沿横、竖或斜线向一个空位释放障碍物；不能穿过障碍物或其他棋子。</li>
+  </ol>
+  <p>移动后如果没有可射箭的位置，该移动不允许。射箭后回合结束，换对方行动。</p>
+
+  <h2>交互</h2>
+  <p>点击自己的棋子后，棋盘会显示所有可移动位置；点击其中一个位置完成移动后，再显示所有可射箭位置。点击目标位置射箭。该提示为强制开启，不需要额外按钮。</p>
+
+  <h2>胜负</h2>
+  <ul>
+    <li>如果轮到某一方时，该方所有棋子都没有合法回合（无法移动，或移动后无法射箭），则<strong>对方获胜</strong>。</li>
+    <li>任意一方可以认输。</li>
+  </ul>
+</body>
+</html>

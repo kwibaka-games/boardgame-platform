@@ -58,6 +58,7 @@ web/games/alendo.js
 web/games/gomoku.js
 web/games/gomoku-seki.js
 web/games/gomoku-rif.js
+web/games/amazons.js
 web/games/gomoku-forbidden.js
 web/games/ice/
 

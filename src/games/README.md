@@ -8,6 +8,7 @@ src/games/mock    -> github.com/kwibaka-games/mock-ttt
 src/games/reversi -> github.com/kwibaka-games/reversi
 src/games/alendo  -> github.com/kwibaka-games/alendo
 src/games/gomoku   -> github.com/kwibaka-games/gomoku
+src/games/amazons  -> github.com/kwibaka-games/amazons
 ```
 
 A game repository contains its rules, worker, metadata, browser module, and

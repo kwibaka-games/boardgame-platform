@@ -35,6 +35,8 @@ The suite covers:
   first in seki, draw outcomes, and resignation.
 - Gomoku specified openings, forbidden-point detection, black-only hint state,
   three-move swap and five-move two-choice flow.
+- Amazons initial pieces, queen-like movement/arrow blocking, forced targets,
+  turn switching, no-legal-turn loss, and resignation.
 
 `npm test` uses an in-memory SQLite database and starts real worker child
 processes; no external services are needed.

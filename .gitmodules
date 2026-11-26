@@ -13,3 +13,6 @@
 [submodule "src/games/gomoku"]
 	path = src/games/gomoku
 	url = ../gomoku.git
+[submodule "src/games/amazons"]
+	path = src/games/amazons
+	url = ../amazons.git
