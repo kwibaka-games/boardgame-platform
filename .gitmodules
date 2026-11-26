@@ -16,3 +16,6 @@
 [submodule "src/games/amazons"]
 	path = src/games/amazons
 	url = ../amazons.git
+[submodule "src/games/einstein"]
+	path = src/games/einstein
+	url = ../einstein.git

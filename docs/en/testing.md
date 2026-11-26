@@ -37,6 +37,8 @@ The suite covers:
   three-move swap and five-move two-choice flow.
 - Amazons initial pieces, queen-like movement/arrow blocking, forced targets,
   turn switching, no-legal-turn loss, and resignation.
+- Einstein numbering, die/closest-number selection, one-square directions,
+  capture-own behavior, and resignation.
 
 `npm test` uses an in-memory SQLite database and starts real worker child
 processes; no external services are needed.

@@ -298,6 +298,7 @@ const RULES = {
   'reversi': { page: '/rules/reversi.html', title: '黑白棋 · 规则' },
   'alendo': { page: '/rules/alendo.html', title: '阿尔林铎棋 · 规则' },
   'amazons': { page: '/rules/amazons.html', title: '亚马逊棋 · 规则' },
+  'einstein': { page: '/rules/einstein.html', title: '爱因斯坦棋 · 规则' },
   'gomoku': { page: '/rules/gomoku.html', title: '五子棋（无禁手）· 规则' },
   'gomoku-seki': { page: '/rules/gomoku-seki.html', title: '五子棋（无禁手，座子）· 规则' },
   'gomoku-forbidden': { page: '/rules/gomoku-forbidden.html', title: '五子棋（仅禁手）· 规则' },

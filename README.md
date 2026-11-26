@@ -44,6 +44,8 @@ process, and each game implementation is versioned in its own git repository.
 - 亚马逊棋 / Amazons: 10×10 cell board, four pieces per side, queen-like move
   followed by a queen-like arrow shot; forced movement/arrow targets; a side
   with no legal turn loses.
+- 爱因斯坦棋 / Einstein chess: 5×5 numbered pieces, system 1D6, closest-number
+  move (tie -> lower), forced target display, corner/capture-all win.
 - Mock tic-tac-toe worker as the reference implementation.
 - Self-contained FontAwesome Free assets, no CDN dependency.
 
@@ -60,6 +62,8 @@ process, and each game implementation is versioned in its own git repository.
 ![RIF 五子棋](docs/assets/gomoku-rif.png)
 
 ![亚马逊棋](docs/assets/amazons.png)
+
+![爱因斯坦棋](docs/assets/einstein.png)
 
 ![Profile](docs/assets/profile.png)
 
@@ -92,6 +96,7 @@ src/games/reversi/   git submodule: reversi repository
 src/games/alendo/    git submodule: alendo repository
 src/games/gomoku/    git submodule: gomoku repository (four catalog ids)
 src/games/amazons/   git submodule: amazons repository
+src/games/einstein/  git submodule: einstein repository
 src/cli/             administrator bootstrap CLI
 web/                 platform shell, styles, rules pages, generated game UI
 scripts/             sync-games and ice fuzzer

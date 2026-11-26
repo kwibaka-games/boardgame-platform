@@ -5,6 +5,7 @@ import { MOCK_GAME } from '../games/mock/metadata.js';
 import { REVERSI_GAME } from '../games/reversi/metadata.js';
 import { ALENDO_GAME } from '../games/alendo/metadata.js';
 import { AMAZONS_GAME } from '../games/amazons/metadata.js';
+import { EINSTEIN_GAME } from '../games/einstein/metadata.js';
 import { GOMOKU_FORBIDDEN_GAME, GOMOKU_GAME, GOMOKU_RIF_GAME, GOMOKU_SEKI_GAME } from '../games/gomoku/metadata.js';
 import type { GameId, GameMetadata } from '../protocol/protocol.js';
 
@@ -32,6 +33,13 @@ export const GAME_CATALOG: GameCatalogEntry[] = [
     worker: {
       src: path.resolve(root, 'src/games/mock/worker.ts'),
       dist: path.resolve(root, 'dist/games/mock/worker.js'),
+    },
+  },
+  {
+    metadata: EINSTEIN_GAME,
+    worker: {
+      src: path.resolve(root, 'src/games/einstein/worker.ts'),
+      dist: path.resolve(root, 'dist/games/einstein/worker.js'),
     },
   },
   {

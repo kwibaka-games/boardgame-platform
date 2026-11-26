@@ -202,7 +202,9 @@ specified openings and black-only forbidden points (overline/double-four/double-
 with a black-only hint toggle; `gomoku-rif` adds three-move swap and five-move
 two choices. Free/seki have no hint UI; coordinates use A-H, J-P (I skipped).
 `amazons` is a 10×10 cell-based game: a queen-like move followed by a queen-like
-arrow shot, with forced move/arrow targets for the current player.
+arrow shot, with forced move/arrow targets for the current player. `einstein` is
+a 5×5 dice game: each side numbers its pieces, the system rolls 1D6 and the
+closest-numbered piece moves; forced targets and public dice are included.
 
 ### Versioning
 
