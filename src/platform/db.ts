@@ -179,6 +179,12 @@ function migrate(db: Db): void {
 
   // Forward-compatible columns for databases that already have the new users
   // table but were created by an intermediate build.
+  if (
+    userColumns.length > 0 &&
+    !userColumns.some((column) => column.name === 'avatar_change_required')
+  ) {
+    db.exec('ALTER TABLE users ADD COLUMN avatar_change_required INTEGER NOT NULL DEFAULT 0');
+  }
   const roomColumns = tableColumns(db, 'rooms');
   if (!roomColumns.some((column) => column.name === 'password_hash')) {
     db.exec('ALTER TABLE rooms ADD COLUMN password_hash TEXT');
